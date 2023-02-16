@@ -1,0 +1,9 @@
+{
+    "name": "scene_1",
+    "url": "http://www.wechatvr.org/source/abc123.jpg",
+    "position": {
+        "x": 1.0,
+        "y": 2.0,
+        "z": 3.0
+    }
+}

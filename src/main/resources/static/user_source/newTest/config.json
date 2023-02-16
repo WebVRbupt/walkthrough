@@ -1,0 +1,25 @@
+{
+  "id": 1022,
+  "scenes": [
+    {
+      "name": "scene_1",
+      "url": "http://www.wechatvr.org/source/abc123.jpg",
+      "position": [2,3,5.1]
+    },
+    {
+      "name": "scene_2",
+      "url": "http://www.wechatvr.org/source/abc124.jpg",
+      "position": [2,1,5.1]
+    }
+  ],
+  "model": {
+    "name": "model_1",
+    "url": "",
+    "position": [],
+    "scale": []
+  },
+  "skyboxConfig": {
+    "scale": []
+  }
+}
+

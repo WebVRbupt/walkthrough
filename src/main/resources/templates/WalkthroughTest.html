@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>科研楼-607-全景漫游</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link type="text/css" rel="stylesheet" href="../static/css/main.css">
+</head>
+
+<body>
+<div id="info">
+  <a href="http://vr.wechatvr.org" target="_blank" rel="noopener">全景漫游</a> - 607
+</div>
+<script id="vertexShader" type="x-shader/x-vertex">
+        // attribute vec3 position;
+        // attribute vec3 color;
+        // 系统自动声明顶点纹理坐标变量uv
+        // attribute vec2 uv;
+        // varying关键字声明一个变量表示顶点纹理坐标插值后的结果
+        varying vec2 vUv;
+        void main(){
+            // 顶点纹理坐标uv数据进行插值计算
+            vUv = uv;
+            // 投影矩阵projectionMatrix、视图矩阵viewMatrix、模型矩阵modelMatrix
+            gl_Position = projectionMatrix*viewMatrix*modelMatrix*vec4( position, 1.0 );
+        }
+ 	   </script>
+<!-- 片元着色器 -->
+<script id="fragmentShader" type="x-shader/x-fragment">
+        // 声明一个纹理对象变量
+        uniform sampler2D texture1;
+        uniform sampler2D texture2;
+        uniform float Uprogress;
+		uniform float alpha;
+        // 顶点片元化后有多少个片元就有多少个纹理坐标数据 vUv
+        varying vec2 vUv;
+
+        void main() {
+            //内置函数texture2D通过纹理坐标vUv获得贴图texture的像素值
+            //gl_FragColor = mix(texture2D( texture1, vUv ),texture2D( texture2, vUv ),Uprogress);
+			vec4 colorFromBox0 = texture2D(texture1,vUv);
+			vec4 colorFromBox1 = texture2D(texture2,vUv);
+			vec3 color = mix(colorFromBox0.xyz,colorFromBox1.xyz,Uprogress);
+			gl_FragColor = vec4(color,alpha);
+		 }
+    	</script>
+<script src="../static/js/lib/Tween.js"></script>
+<script type="module">
+
+  import * as THREE from '../static/js/build/three.module.js';
+
+  import { DDSLoader } from '../static/js/lib/loaders/DDSLoader.js';
+  import { MTLLoader } from '../static/js/lib/loaders/MTLLoader.js';
+  import { OBJLoader } from '../static/js/lib/loaders/OBJLoader.js';
+  import { OrbitControls } from '../static/js/lib/controls/OrbitControls.js';
+  import { FirstPersonCameraControl } from '../static/js/lib/controls/firstPersonCameraControl.js';
+  import { GUI } from '../static/js/lib/dat.gui.module.js';
+  let camera, scene, renderer;
+  let model,panorama,obj;
+  let mouseX = 0, mouseY = 0;
+
+  let windowHalfX = window.innerWidth / 2;
+  let windowHalfY = window.innerHeight / 2;
+
+  // 将模型的中心点设置到canvas坐标系的中心点，保证模型显示是居中的，object就是操作的目标模型
+  let box;// 获取模型的包围盒
+  let orbitControls, firstperson;
+  let circle_group = new THREE.Group();
+  let pano_group = new THREE.Group();
+  let navi_circles = new THREE.Group();
+  let circles;
+  let shaderMaterial=[];
+  let panorama_1;
+  let navi_pos1;
+  let map;
+  let currentPano;
+  let nextPano;
+  let transitionFlag=false;
+  //映射比例
+  let scale=2.0;
+  const rangings=new Array();
+  const materials_1=[];
+  document.time=0;
+  init();
+  animate();
+
+
+  function init() {
+    const container = document.createElement( 'div' );
+    document.body.appendChild( container );
+
+    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 3000 );
+    camera.position.set(0,0,10);
+    // scene
+    scene = new THREE.Scene();
+
+    var axes = new THREE.AxisHelper(500);
+    scene.add(axes);
+
+    const ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
+    scene.add( ambientLight );
+
+    const pointLight = new THREE.PointLight( 0xffffff, 0.8 );
+    camera.add( pointLight );
+    scene.add( camera );
+
+
+    const onProgress = function ( xhr ) {
+
+      if ( xhr.lengthComputable ) {
+
+        const percentComplete = xhr.loaded / xhr.total * 100;
+        console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+
+      }
+
+    };
+
+    const onError = function () { };
+
+
+    //
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer.domElement );
+
+    //
+
+    window.addEventListener( 'resize', onWindowResize );
+    window.addEventListener('click',onCircleClick);
+    //控制器controls
+    orbitControls= new OrbitControls(camera,renderer.domElement);
+    orbitControls.enabled=true;
+
+    firstperson= new FirstPersonCameraControl(camera,renderer.domElement);
+    firstperson.enabled=false;
+    firstperson.applyGravity=false;
+    firstperson.applyCollision=false;
+
+    const manager = new THREE.LoadingManager();
+    manager.addHandler( /\.dds$/i, new DDSLoader() );
+
+    //model
+    // comment in the following line and import TGALoader if your asset uses TGA textures
+    // manager.addHandler( /\.tga$/i, new TGALoader() );
+
+    new MTLLoader( manager )
+            .setPath( '../static/user_source/newTest/' )
+            .load( '1.mtl', function ( materials ) {
+
+              materials.preload();
+
+              new OBJLoader( manager )
+                      .setMaterials( materials )
+                      .setPath( '../static/user_source/newTest/' )
+                      .load( '1.obj', function ( object ) {
+                        model=object;
+                        obj=model;
+                        model.rotateY(90/180*Math.PI);
+
+                        //obj.rotateX(3/180*Math.PI);
+                        obj.rotateY(180/180*Math.PI)
+                        console.log(object.position);
+                        scene.add( object );
+                      }, onProgress, onError );
+
+            } );
+
+    //全景视图
+    pano_group=new THREE.Group();
+    let position_1=new THREE.Vector3();
+    position_1.set(0.7,-1.2,-4.5);
+
+    let textures_1 = getTexturesFromAtlasFile("../static/user_source/newTest/3.png", 6 );
+    panorama_1 = getPanorama(materials_1,textures_1,textures_1,position_1);
+    panorama_1.name='pos1';
+    pano_group.add(panorama_1);
+    pano_group.visible=false;
+    scene.add(pano_group);
+    // mesh.translateY(250);
+    //场景切换
+    //GUI
+    let settings = {
+      firstPerson: false,
+      enter_panorama:false,
+      show_panos:false,
+      show_obj:true,
+      obj:"model",
+      rotateX:0.1,
+      rotateY:0.1,
+      rotateZ:0.1,
+      scale:1,
+      getObjPosition:false,
+      transition:false
+    };
+    var gui = new GUI();
+    gui.add(settings,"firstPerson",false).onChange(onControlChange);
+    gui.add(settings,"enter_panorama",false).onChange(enter_panorama);
+    gui.add(settings,"show_panos",false).onChange(show_panos);
+    gui.add(settings,"show_obj",false).onChange(show_obj);
+    gui.add(settings,"obj",["model","panorama"]).onChange(onObjChange);
+    gui.add(settings,"rotateX",-180,180,0.1).onChange(onRotateX);
+    gui.add(settings,"rotateY",-180,180,0.1).onChange(onRotateY);
+    gui.add(settings,"rotateZ",-180,180,0.1).onChange(onRotateZ);
+    gui.add(settings,"scale",1,1000,1).onChange(onScaleChange);
+    gui.add(settings,"getObjPosition",false).onChange(ongetPosition);
+    gui.add(settings,"transition",false).onChange(onTransitionChange);
+    function onTransitionChange(newValue){
+      if(settings.transition){
+        transitionFlag=true;
+      }else{
+        transitionFlag=false;
+      }
+    }
+    function onControlChange(newValue){
+      if(settings.firstPerson){
+        firstperson.enabled=true;
+        orbitControls.enabled=false;
+        camera.position.set(0.7,0,-4.5);
+      }else{
+        firstperson.enabled=false;
+        orbitControls.enabled=true;
+        camera.position.set(0,0,2);
+      }
+    }
+    function enter_panorama(newValue){
+      if(settings.enter_panorama){
+        pano_group.visible=true;
+        camera.position.set(0.7,0,-4.5);
+        panorama_1.visible=true;
+        currentPano=panorama_1;
+        // camera.position.set(400,0,0);
+        obj.visible=false;
+      }else{
+        pano_group.visible=false;
+        camera.position.set(0,0,2);
+      }
+    }
+    function show_panos(){
+      if(settings.show_panos){
+        pano_group.visible=true;
+      }else{
+        pano_group.visible=false;
+      }
+    }
+    function show_obj(){
+      if(settings.show_obj){
+        obj.visible=true;
+      }else{
+        obj.visible=false;
+      }
+    }
+    function onObjChange(newValue){
+      switch(settings.obj){
+        case "model":
+          obj=model;
+        case "panorama":
+          obj=pano_group;
+      }
+    }
+    function onRotateX(newValue){
+      obj.rotateX(settings.rotateX/180*Math.PI);
+    }
+
+    function onRotateY(newValue){
+      obj.rotateY(settings.rotateY/180*Math.PI);
+    }
+    function onRotateZ(newValue){
+      obj.rotateZ(settings.rotateZ/180*Math.PI);
+    }
+    function onScaleChange(newValue){
+      var scale=settings.scale;
+      obj.scale.set(scale,scale,scale);
+    }
+    function ongetPosition(newValue){
+      if(settings.getObjPosition){
+        container.addEventListener('click',onDocumentClick);
+        orbitControls.enabled=false;
+        firstperson.enabled=false;
+      }else{
+        container.removeEventListener('click',onDocumentClick);
+        orbitControls.enabled=true;
+      }
+    }
+  }
+  document.time=0;
+  function getPanorama(materials,textures_1,textures_2,vet3){
+    for(let i = 0; i < 6; i++) {
+      materials.push(new THREE.ShaderMaterial({
+        uniforms: {
+          texture1: {
+            value: textures_1[i]
+          },
+          //用于渐变的纹理
+          texture2: {
+            value: textures_2[i]
+          },
+          Uprogress: {
+            value: 0
+          },
+          alpha: {
+            value: 1
+          }
+        },
+        // 顶点着色器
+        vertexShader: document.getElementById('vertexShader').textContent,
+        // 片元着色器
+        fragmentShader: document.getElementById('fragmentShader').textContent,
+        transparent: true,
+        depthTest: false
+      }))
+    }
+    var skyBox = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), materials );
+    skyBox.geometry.scale( 1, 1, -1 );
+    skyBox.scale.set(2.43,2.43,2.43);
+    skyBox.rotateX(90/180*Math.PI);
+    skyBox.rotateY(180*Math.PI);
+    skyBox.position.copy(new THREE.Vector3(vet3.x,vet3.y+1.2,vet3.z));
+    skyBox.visible=false;
+    skyBox.renderOrder=10;
+    return skyBox;
+  }
+  function getNaviCircle(vector3){
+    var geometry_circle = new THREE.CircleGeometry(0.3,20,0,2 * Math.PI);
+    geometry_circle.scale(-2,2,2);
+    //定义白点的材质
+    var mesh_circle = new THREE.Mesh(geometry_circle,
+            new THREE.MeshBasicMaterial({
+              map:new THREE.TextureLoader().load( '../static/images/circle.png'),
+              transparent : true,
+              depthTest: false
+            }));
+    mesh_circle.rotation.x = Math.PI/2;
+    mesh_circle.position.copy(vector3);
+    mesh_circle.renderOrder=11;
+    return mesh_circle;
+  }
+  function onWindowResize() {
+
+    windowHalfX = window.innerWidth / 2;
+    windowHalfY = window.innerHeight / 2;
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+  }
+
+  function onDocumentMouseMove( event ) {
+
+    mouseX = ( event.clientX - windowHalfX ) / 2;
+    mouseY = ( event.clientY - windowHalfY ) / 2;
+
+  }
+  function onDocumentClick( event ) {
+    event.preventDefault();
+    var vector = new THREE.Vector3();//三维坐标对象
+    vector.set(
+            ( event.clientX / window.innerWidth ) * 2 - 1,
+            - ( event.clientY / window.innerHeight ) * 2 + 1,
+            0.5 );
+    vector.unproject( camera );
+    var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+    var intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length > 0) {
+      var selected = intersects[0];//取第一个物体
+      console.log('('+selected.point.x+','+selected.point.y+','+selected.point.z+')');
+      rangings.push(new THREE.Vector3(selected.point.x,selected.point.y,selected.point.z));
+    }
+    if(rangings.length==2){
+      var v1=rangings.pop();
+      var v2=rangings.pop();
+      console.log('距离:'+v1.distanceTo(v2)*scale+'米');
+    }
+  }
+
+  function onCircleClick( event ) {
+    if(!transitionFlag) return;
+    var subV=new THREE.Vector3;
+    event.preventDefault();
+    var vector = new THREE.Vector3();//三维坐标对象
+    vector.set(
+            ( event.clientX / window.innerWidth ) * 2 - 1,
+            - ( event.clientY / window.innerHeight ) * 2 + 1,
+            0.5 );
+    vector.unproject( camera );
+    var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+    var intersects = raycaster.intersectObjects(circles);
+    if (intersects.length > 0) {
+      console.log(intersects[0].object.name);
+      var selected = intersects[0];//取第一个物体
+      nextPano=map[selected.object.name];
+      var panoFlag;
+      var startPosition = camera.position.clone();
+      startPosition.y=selected.object.position.y;
+      var endPosition= new THREE.Vector3(selected.object.position.x,selected.object.position.y,selected.object.position.z);
+      var cameraPos = camera.position.clone();
+      camera.lookAt(endPosition.x,0,endPosition.z);
+      nextPano.visible=true;
+      //navi_circles.visible=false;
+      const tweenA = new TWEEN.Tween(cameraPos).to(endPosition,1200).easing(TWEEN.Easing.Linear.None).onUpdate(function(){
+        var vector = new THREE.Vector3(cameraPos.x,0,cameraPos.z);
+        camera.position.copy(vector);
+        var tempPositon=new THREE.Vector3(vector.x,selected.point.y,vector.z);
+        var totalLength = subV.subVectors(startPosition,endPosition).length();
+        var progressLength = subV.subVectors(tempPositon,endPosition).length();
+        var v = progressLength/totalLength
+      }).onComplete(function(){
+        //console.log(navi_circles[0]);
+        currentPano.visible=false;
+        currentPano=nextPano;
+        nextPano=null;
+        //	navi_circles.visible=true;
+      });
+      var scale_begin={x:3.3,y:4.9,z:3.3};
+      var scale_end={x:2.2,y:2.2,z:2.2};
+      const tweenB=new TWEEN.Tween(scale_begin).to(scale_end,800).easing(TWEEN.Easing.Linear.None).onUpdate(function(){
+        if(panoFlag==0){
+          //panorama_1.scale.set(scale_begin.x,scale_begin.y,scale_begin.z);
+          panorama_1.scale.set(3.3,4.9,3.3);
+        }else{
+          panorama_2.scale.set(3.3,4.9,3.3);
+          //panorama_2.scale.set(scale_begin.x,scale_begin.y,scale_begin.z);
+        }
+      }).onComplete(function(){
+        panorama_1.scale.set(2.2,2.2,2.2);
+        panorama_2.scale.set(2.2,2.2,2.2)
+      });
+      const tween=new TWEEN.Tween();
+      tween.chain(tweenA,tweenB);
+      tweenA.start();
+    }
+  }
+  function getTexturesFromAtlasFile( atlasImgUrl, tilesNum ) {
+
+    const textures = [];
+
+    for ( let i = 0; i < tilesNum; i ++ ) {
+
+      textures[ i ] = new THREE.Texture();
+
+    }
+
+    new THREE.ImageLoader()
+            .load( atlasImgUrl, ( image ) => {
+
+              let canvas, context;
+              const tileWidth = image.height;
+
+              for ( let i = 0; i < textures.length; i ++ ) {
+
+                canvas = document.createElement( 'canvas' );
+                context = canvas.getContext( '2d' );
+                canvas.height = tileWidth;
+                canvas.width = tileWidth;
+                context.drawImage( image, tileWidth * i, 0, tileWidth, tileWidth, 0, 0, tileWidth, tileWidth );
+                textures[ i ].image = canvas;
+                textures[ i ].needsUpdate = true;
+
+              }
+
+            } );
+
+    return textures;
+
+  }
+  function animate() {
+
+    requestAnimationFrame( animate );
+    if(orbitControls.enabled) orbitControls.update();
+    // if(firstperson.enabled) firstperson.update();
+    renderer.render(scene,camera);
+    TWEEN.update();
+  }
+
+</script>
+
+</body>
+</html>
+
