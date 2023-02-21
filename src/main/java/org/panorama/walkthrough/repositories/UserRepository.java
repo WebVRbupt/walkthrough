@@ -14,4 +14,5 @@ import javax.persistence.Table;
  */
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByUserId(Long id);
+    User findUserByUserName(String userName);
 }

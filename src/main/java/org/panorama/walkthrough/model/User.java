@@ -21,11 +21,16 @@ import javax.persistence.*;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
             @Setter@Getter
     Long userId;
     @Setter@Getter
     String userName;
     @Setter@Getter
     String password;
+
+    public User(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
+    }
 }

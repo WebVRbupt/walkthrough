@@ -26,10 +26,8 @@ class UserRepositoryTest {
     UserRepository userRepository;
     @BeforeEach
     void setUp() {
-        userRepository.save(new User(1L,"test","123"));
-        userRepository.save(new User(2L,"test2","123"));
-        User user = userRepository.findByUserId(2L);
-        log.info(user.getUserName());
+        userRepository.save(new User("test1","123"));
+        userRepository.save(new User("test2","123"));
     }
 
     @AfterEach
@@ -37,8 +35,8 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findByUserId() {
-        User user = userRepository.findByUserId(2L);
-//        log.info(user.getUserName());
+    void findUserByUserName() {
+        User user = userRepository.findUserByUserName("test2");
+        log.info(user.getUserId());
     }
 }
