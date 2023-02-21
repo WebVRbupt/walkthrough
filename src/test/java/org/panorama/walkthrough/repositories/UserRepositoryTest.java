@@ -37,6 +37,6 @@ class UserRepositoryTest {
     @Test
     void findUserByUserName() {
         User user = userRepository.findUserByUserName("test2");
-        log.info(user.getUserId());
+        log.info(user);
     }
 }

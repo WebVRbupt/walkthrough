@@ -1,6 +1,6 @@
 package org.panorama.walkthrough;
 
-import org.springframework.stereotype.Controller;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description TODO
  * @createTime 2023/02/16
  */
-@Controller
+@Log4j2
+@RestController
 public class ProjectShareController {
     @RequestMapping("/test")
     public String th(Model model){
@@ -20,5 +21,4 @@ public class ProjectShareController {
         model.addAttribute("msg",msg);
         return "importJsonFile";
     }
-
 }

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.sql.Date;
 
 /**
  * @author yang
@@ -23,7 +25,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter
     @Getter
-    Integer projectID;
+    Integer projectId;
     @Getter
     @Setter
     String projectName;
@@ -33,5 +35,35 @@ public class Project {
     @Getter
     @Setter
     Integer userId;
+    @Getter
+    @Setter
+    Date creationTime;
+    @Getter
+    @Setter
+    Integer status;
 
+    public Project(String projectName, String projectPath, Integer userId, Integer status) {
+        this.projectName = projectName;
+        this.projectPath = projectPath;
+        this.userId = userId;
+        this.status = status;
+    }
+
+    public Project(String projectName, String projectPath, Integer userId) {
+        this.projectName = projectName;
+        this.projectPath = projectPath;
+        this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "projectID=" + projectId +
+                ", projectName='" + projectName + '\'' +
+                ", projectPath='" + projectPath + '\'' +
+                ", userId=" + userId +
+                ", creationTime=" + creationTime +
+                ", status=" + status +
+                '}';
+    }
 }

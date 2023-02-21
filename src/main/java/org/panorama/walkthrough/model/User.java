@@ -28,9 +28,39 @@ public class User {
     String userName;
     @Setter@Getter
     String password;
+    @Setter@Getter
+    String salt;
+    @Setter@Getter
+    String email;
+    @Setter@Getter
+    Integer status;
 
-    public User(String userName, String password) {
+    public User(String userName, String password, String salt) {
         this.userName = userName;
         this.password = password;
+        this.salt = salt;
+    }
+
+    public User(String userName, String password, String salt, String email) {
+        this.userName = userName;
+        this.password = password;
+        this.salt = salt;
+        this.email = email;
+    }
+
+    public User(String userName, String password) {
+        this(userName,password,"xyw");
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
+                ", email='" + email + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
