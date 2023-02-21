@@ -18,7 +18,7 @@ public class ProjectShareController {
     public String th(Model model){
         String msg="123";
         model.addAttribute("msg",msg);
-        return "walkthrough";
+        return "importJsonFile";
     }
 
 }
