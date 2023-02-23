@@ -58,6 +58,13 @@
             <version>2.0.23</version>
         </dependency>
 
+        <dependency>
+            <groupId>black.ninia</groupId>
+            <artifactId>jep</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
