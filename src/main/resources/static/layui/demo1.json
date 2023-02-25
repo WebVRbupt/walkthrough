@@ -6,8 +6,8 @@
     "checkin": "777"
   }
   ,"data": [{
-    "id": "10001"
-    ,"username": "杜甫123"
+    "project_id": "10001"
+    ,"project_name": "杜甫123"
     ,"email": "test1@email.com"
     ,"sex": "<strong style=\"color: red\">男</strong>"
     ,"city": "浙江杭州"
@@ -18,8 +18,8 @@
     ,"joinTime": "2016-10-14"
     ,"LAY_DISABLED": true
   }, {
-    "id": "10002"
-    ,"username": "李白"
+    "project_id": "10002"
+    ,"project_name": "李白"
     ,"email": "test2@email.com"
     ,"sex": "男"
     ,"city": "浙江杭州"
@@ -30,8 +30,8 @@
     ,"joinTime": "2016-10-14"
     ,"LAY_CHECKED": true
 }, {
-    "id": "10003"
-    ,"username": "苏轼"
+    "project_id": "10003"
+    ,"project_name": "苏轼"
     ,"email": "test3@email.com"
     ,"sex": "男"
     ,"city": "浙江杭州"
@@ -41,8 +41,8 @@
     ,"checkin": null
     ,"joinTime": "2016-10-14"
   }, {
-    "id": "10004"
-    ,"username": "李清照"
+    "project_id": "10004"
+    ,"project_name": "李清照"
     ,"email": "test4@email.com"
     ,"sex": "女"
     ,"city": "浙江杭州"
@@ -52,8 +52,8 @@
     ,"checkin": "106"
     ,"joinTime": "2016-10-14"
   }, {
-    "id": "10005"
-    ,"username": "冰心"
+    "project_id": "10005"
+    ,"project_name": "冰心"
     ,"email": "test5@email.com"
     ,"sex": "女"
     ,"city": "浙江杭州"
@@ -63,8 +63,8 @@
     ,"checkin": "106"
     ,"joinTime": "2016-10-14"
   }, {
-    "id": "10006"
-    ,"username": "张三"
+    "project_id": "10006"
+    ,"project_name": "张三"
     ,"email": "test6@email.com"
     ,"sex": "男"
     ,"city": "浙江杭州"
@@ -74,8 +74,8 @@
     ,"checkin": "106"
     ,"joinTime": "2016-10-14"
   }, {
-    "id": "10007"
-    ,"username": "张三7"
+    "project_id": "10007"
+    ,"project_name": "张三7"
     ,"email": "test7@email.com"
     ,"sex": "男"
     ,"city": "浙江杭州"
@@ -85,8 +85,8 @@
     ,"checkin": "106"
     ,"joinTime": "2016-10-14"
   }, {
-    "id": "10008"
-    ,"username": "张三8"
+    "project_id": "10008"
+    ,"project_name": "张三8"
     ,"email": "test8@email.com"
     ,"sex": "男"
     ,"city": "浙江杭州"
@@ -96,8 +96,8 @@
     ,"checkin": "106"
     ,"joinTime": "2016-10-14"
   }, {
-    "id": "10009"
-    ,"username": "张三9"
+    "project_id": "10009"
+    ,"project_name": "张三9"
     ,"email": "test9@email.com"
     ,"sex": "男"
     ,"city": "浙江杭州"
@@ -107,8 +107,8 @@
     ,"checkin": "106"
     ,"joinTime": "2016-10-14"
   }, {
-    "id": "10010"
-    ,"username": "张三10"
+    "project_id": "10010"
+    ,"project_name": "张三10"
     ,"email": "test10@email.com"
     ,"sex": "男"
     ,"city": "浙江杭州"
@@ -118,8 +118,8 @@
     ,"checkin": "106"
     ,"joinTime": "2016-10-14"
   }, {
-    "id": "10011"
-    ,"username": "张三11"
+    "project_id": "10011"
+    ,"project_name": "张三11"
     ,"email": "test11@email.com"
     ,"sex": "男"
     ,"city": "浙江杭州"
