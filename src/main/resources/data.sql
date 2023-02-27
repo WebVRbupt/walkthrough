@@ -1,1 +1,1 @@
-insert into users values (1,'vrtest','vr123');
+insert into users values ('vr','vr123','vr@163.com');

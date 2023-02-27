@@ -1,0 +1,37 @@
+POST http://127.0.0.1:8080/user/signin
+Content-Type: application/json
+
+{
+  "userName": "vr2",
+  "password": "vr123",
+  "email": "vr2@163.com"
+}
+###
+POST http://127.0.0.1:8080/user/signin
+Content-Type: application/json
+
+{
+"userName": "vr3",
+"password": "vr123",
+"email": "vr3@163.com"
+}
+
+
+
+
+### login
+POST http://127.0.0.1:8080/user/login
+Content-Type: application/json
+
+{
+"userName": "vr3",
+"password": "vr123"
+}
+###
+POST http://127.0.0.1:8080/user/login
+Content-Type: application/json
+
+{
+"userName": "vr2",
+"password": "vr123"
+}

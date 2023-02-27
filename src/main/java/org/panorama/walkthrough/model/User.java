@@ -33,7 +33,7 @@ public class User {
     @Setter@Getter
     String email;
     @Setter@Getter
-    Integer status;
+    Integer status=0;
 
     public User(String userName, String password, String salt) {
         this.userName = userName;
