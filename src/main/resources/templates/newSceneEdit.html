@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>全景行走漫游管理系统</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="css/sceneEdit.css">
+</head>
+<body>
+<script src="./layui/layui.js"></script>
+<script src="./js/app/newSceneEdit.js" type="module"></script>
+
+<script id="vertexShader" type="x-shader/x-vertex">
+        // attribute vec3 position;
+        // attribute vec3 color;
+        // 系统自动声明顶点纹理坐标变量uv
+        // attribute vec2 uv;
+        // varying关键字声明一个变量表示顶点纹理坐标插值后的结果
+        varying vec2 vUv;
+        void main(){
+            // 顶点纹理坐标uv数据进行插值计算
+            vUv = uv;
+            // 投影矩阵projectionMatrix、视图矩阵viewMatrix、模型矩阵modelMatrix
+            gl_Position = projectionMatrix*viewMatrix*modelMatrix*vec4( position, 1.0 );
+        }
+
+
+
+</script>
+<!-- 片元着色器 -->
+<script id="fragmentShader" type="x-shader/x-fragment">
+        // 声明一个纹理对象变量
+        uniform sampler2D texture1;
+        uniform sampler2D texture2;
+        uniform float Uprogress;
+		uniform float alpha;
+        // 顶点片元化后有多少个片元就有多少个纹理坐标数据 vUv
+        varying vec2 vUv;
+
+        void main() {
+            //内置函数texture2D通过纹理坐标vUv获得贴图texture的像素值
+            //gl_FragColor = mix(texture2D( texture1, vUv ),texture2D( texture2, vUv ),Uprogress);
+			vec4 colorFromBox0 = texture2D(texture1,vUv);
+			vec4 colorFromBox1 = texture2D(texture2,vUv);
+			vec3 color = mix(colorFromBox0.xyz,colorFromBox1.xyz,Uprogress);
+			gl_FragColor = vec4(color,alpha);
+		 }
+
+
+
+</script>
+
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-black">
+            <a class="logo" href="/v2/">
+                <img src="./images/app/BUPT_LOGO.png" alt="全景行走漫游管理系统" id="BUPTLOGO">
+            </a>
+            全景行走漫游管理系统
+        </div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <!-- 移动端显示 -->
+            <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+                <i class="layui-icon layui-icon-spread-left"></i>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+                <a href="javascript:;">
+                    <img src="./images/app/BUPT_LOGO.png"
+                         class="layui-nav-img">
+                    tester
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">Your Profile</a></dd>
+                    <dd><a href="">Settings</a></dd>
+                    <dd><a href="">Sign out</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+                <a href="javascript:;">
+                    <i class="layui-icon layui-icon-more-vertical"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!--    <div class="layui-side layui-bg-black">-->
+    <!--        <div class="layui-side-scroll">-->
+    <!--            &lt;!&ndash; 左侧导航区域（可配合layui已有的垂直导航） &ndash;&gt;-->
+
+    <!--        </div>-->
+    <!--    </div>-->
+
+    <div class="layui-body" style="left: 0">
+        <div class="sceneContainer" id="sceneContainer"></div>
+    </div>
+
+    <div class="layui-panel" id="editPanel">
+        <ul class="layui-menu" id="sceneEditMenu">
+            <li lay-options="{id: 100}">
+                <div class="layui-menu-body-title">
+                    <p><i class="layui-icon layui-icon-template-1"></i>添加模型</p>
+                </div>
+            </li>
+            <li class="layui-menu-item-group layui-menu-item-down" lay-options="{type: 'group'}">
+                <div class="layui-menu-body-title">
+                    模型调整 <i class="layui-icon layui-icon-up"></i>
+                </div>
+                <ul>
+                    <li lay-options="{id: 1031}"><span>模型缩放</span>
+                        <div id="slideTest1"></div>
+                    </li>
+                    <li lay-options="{id: 1032}">
+                        <div class="layui-menu-body-title">X轴旋转</div>
+                        <div id="slideTest2"></div>
+                    </li>
+                    <li lay-options="{id: 1032}">
+                        <div class="layui-menu-body-title">Y轴旋转</div>
+                        <div id="slideTest3"></div>
+                    </li>
+                    <li lay-options="{id: 1032}">
+                        <div class="layui-menu-body-title">Z轴旋转</div>
+                        <div id="slideTest4"></div>
+                    </li>
+                </ul>
+            </li>
+            <li lay-options="{id: 101}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-location"></i>添加热点</span>
+                </div>
+            </li>
+            <li class="layui-menu-item-divider"></li>
+
+            <li class="layui-menu-item-divider"></li>
+            <li lay-options="{id: 104}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-picture-fine"></i>添加场景</span>
+                </div>
+            </li>
+            <li class="layui-menu-item-group layui-menu-item-down" lay-options="{type: 'group'}">
+                <div class="layui-menu-body-title">
+                    场景调整 <i class="layui-icon layui-icon-up"></i>
+                </div>
+                <ul>
+                    <li lay-options="{id: 1031}"><span>场景缩放</span>
+                        <div id="slideTest5"></div>
+                    </li>
+                    <li lay-options="{id: 1032}">
+                        <div class="layui-menu-body-title">X轴旋转</div>
+                        <div id="slideTest6"></div>
+                    </li>
+                    <li lay-options="{id: 1032}">
+                        <div class="layui-menu-body-title">Y轴旋转</div>
+                        <div id="slideTest7"></div>
+                    </li>
+                    <li lay-options="{id: 1032}">
+                        <div class="layui-menu-body-title">Z轴旋转</div>
+                        <div id="slideTest8"></div>
+                    </li>
+                </ul>
+            </li>
+            <li lay-options="{id: 106}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-find-fill"></i>比例标定</span>
+                </div>
+            </li>
+            <li lay-options="{id: 107}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>保存全景漫游</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!--    <div class="layui-footer">-->
+    <!--        &lt;!&ndash; 底部固定区域 &ndash;&gt;-->
+    <!--        底部固定区域-->
+    <!--    </div>-->
+</div>
+
+<button type="button" class="layui-btn layui-btn-fluid" id="saveSuccess" style="display: none"><i
+        class="layui-icon layui-icon-ok-circle" style="font-size: 30px;"></i>场景保存成功
+</button>
+
+<div id="scaleCalibrationInput" style="display: none">
+
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">比例</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required lay-verify="required" placeholder="0.7"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">真实距离(m)</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required lay-verify="required" placeholder="请输入真实距离"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

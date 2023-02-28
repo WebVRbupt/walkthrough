@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>全景行走漫游系统</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="css/sceneEdit.css">
+</head>
+<body>
+<!--<div id="info">-->
+<!--    <a href="http://vr.wechatvr.org" target="_blank" rel="noopener">全景漫游编辑系统</a> - 607-->
+<!--</div>-->
+
+<script src="./layui/layui.js"></script>
+<script>
+    layui.use('slider', function () {
+        var slider = layui.slider;
+
+        //渲染
+        slider.render({
+            elem: '#slideTest1'  //绑定元素
+        });
+        slider.render({
+            elem: '#slideTest2'  //绑定元素
+        });
+        slider.render({
+            elem: '#slideTest3' //绑定元素
+        });
+        slider.render({
+            elem: '#slideTest4'
+        })
+        slider.render({
+            elem: '#slideTest5'
+        })
+        slider.render({
+            elem: '#slideTest6'
+        })
+        slider.render({
+            elem: '#slideTest7'
+        })
+        slider.render({
+            elem: '#slideTest8'
+        })
+    });
+
+    layui.use(['dropdown', 'jquery', 'layer'], () => {
+        const dropdown = layui.dropdown;
+        const $ = layui.$;
+        const layer = layui.layer;
+
+
+        dropdown.on('click(sceneEditMenu)', (options) => {
+            let othis = $(this);
+            if (options.id === 106) {
+                layer.open({
+                    title: '保存全景行走漫游',
+                    type: 1,
+                    btn: ['确认', '取消'],
+                    content: $('#saveSuccess'),
+                    icon: 1
+
+                });
+            }
+        })
+    })
+</script>
+<script type="module">
+    import * as THREE from './js/build/three.module.js';
+
+    import {DDSLoader} from './js/lib/loaders/DDSLoader.js';
+    import {MTLLoader} from './js/lib/loaders/MTLLoader.js';
+    import {OBJLoader} from './js/lib/loaders/OBJLoader.js';
+    import {OrbitControls} from './js/lib/controls/OrbitControls.js';
+    import {FirstPersonCameraControl} from './js/lib/controls/firstPersonCameraControl.js';
+    import {GUI} from './js/lib/dat.gui.module.js';
+
+    let container = document.getElementById("sceneContainer");
+
+    let camera, scene, renderer;
+
+    let model, panorama, obj;
+    let mouseX = 0, mouseY = 0;
+
+    let windowHalfX = window.innerWidth / 2;
+    let windowHalfY = window.innerHeight / 2;
+
+    // 将模型的中心点设置到canvas坐标系的中心点，保证模型显示是居中的，object就是操作的目标模型
+    let box;// 获取模型的包围盒
+    let orbitControls, firstperson;
+    let circle_group = new THREE.Group();
+    let pano_group = new THREE.Group();
+    let navi_circles = new THREE.Group();
+    let circles;
+    let shaderMaterial = [];
+    let panorama_1;
+    let panorama_2;
+    let panorama_3;
+    let panorama_4;
+    let panorama_5;
+    let navi_pos1;
+    let navi_pos2;
+    let navi_pos3;
+    let navi_pos4;
+    let navi_pos5;
+    let map;
+    let currentPano;
+    let nextPano;
+    let transitionFlag = false;
+    //映射比例
+    let scale = 2.0;
+    const rangings = new Array();
+    const materials_1 = [];
+    const materials_2 = [];
+    const materials_3 = [];
+    const materials_4 = [];
+    const materials_5 = [];
+    const M_PI = 3.1415926;
+    let front = null;
+    let end = null;
+    let geometryLine;
+    let materialLine = null;
+    let insetWidth;
+    let insetHeight;
+    let tilesWidth;
+    let eqrWidth;
+    let eqrHeight;
+    let pos1;
+    let pos2;
+    document.time = 0;
+
+    initScene();
+    animate();
+
+    function initScene() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 10);
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const axes = new THREE.AxesHelper(500);
+        scene.add(axes);
+
+        const ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 0.8);
+        camera.add(pointLight);
+
+        scene.add(camera);
+
+        orbitControls = new OrbitControls(camera, renderer.domElement);
+        orbitControls.enabled = true;
+
+        const manager = new THREE.LoadingManager();
+        manager.addHandler(/\.dds$/i, new DDSLoader());
+
+        //model
+        // comment in the following line and import TGALoader if your asset uses TGA textures
+        // manager.addHandler( /\.tga$/i, new TGALoader() );
+
+        new MTLLoader(manager)
+            .setPath('./user_source/newTest/')
+            .load('1.mtl', function (materials) {
+
+                materials.preload();
+
+                new OBJLoader(manager)
+                    .setMaterials(materials)
+                    .setPath('./user_source/newTest/')
+                    .load('1.obj', function (object) {
+                        model = object;
+                        obj = model;
+                        model.rotateY(90 / 180 * Math.PI);
+
+                        //obj.rotateX(3/180*Math.PI);
+                        obj.rotateY(180 / 180 * Math.PI)
+                        console.log(object.position);
+                        scene.add(object);
+                    }, onProgress, onError);
+
+            });
+
+        const onProgress = function (xhr) {
+
+            if (xhr.lengthComputable) {
+
+                const percentComplete = xhr.loaded / xhr.total * 100;
+                console.log(Math.round(percentComplete, 2) + '% downloaded');
+
+            }
+
+        };
+
+        const onError = () => {
+
+        }
+
+    }
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+
+    }
+</script>
+
+
+<button type="button" class="layui-btn layui-btn-fluid" id="saveSuccess" style="display: none"><i
+        class="layui-icon layui-icon-ok-circle" style="font-size: 30px;"></i>场景保存成功
+</button>
+
+<div class="sceneContainer" id="sceneContainer"></div>
+
+<div class="layui-panel" id="editPanel">
+    <ul class="layui-menu" id="sceneEditMenu">
+        <li lay-options="{id: 100}">
+            <div class="layui-menu-body-title">
+                <p><i class="layui-icon layui-icon-template-1"></i>添加模型</p>
+            </div>
+        </li>
+        <li class="layui-menu-item-group layui-menu-item-down" lay-options="{type: 'group'}">
+            <div class="layui-menu-body-title">
+                模型调整 <i class="layui-icon layui-icon-up"></i>
+            </div>
+            <ul>
+                <li lay-options="{id: 1031}"><span>模型缩放</span>
+                    <div id="slideTest1"></div>
+                </li>
+                <li lay-options="{id: 1032}">
+                    <div class="layui-menu-body-title">X轴旋转</div>
+                    <div id="slideTest2"></div>
+                </li>
+                <li lay-options="{id: 1032}">
+                    <div class="layui-menu-body-title">Y轴旋转</div>
+                    <div id="slideTest3"></div>
+                </li>
+                <li lay-options="{id: 1032}">
+                    <div class="layui-menu-body-title">Z轴旋转</div>
+                    <div id="slideTest4"></div>
+                </li>
+            </ul>
+        </li>
+        <li lay-options="{id: 101}">
+            <div class="layui-menu-body-title">
+                <span><i class="layui-icon layui-icon-location"></i>添加热点</span>
+            </div>
+        </li>
+        <li class="layui-menu-item-divider"></li>
+
+        <li class="layui-menu-item-divider"></li>
+        <li lay-options="{id: 104}">
+            <div class="layui-menu-body-title">
+                <span><i class="layui-icon layui-icon-picture-fine"></i>添加场景</span>
+            </div>
+        </li>
+        <li class="layui-menu-item-group layui-menu-item-down" lay-options="{type: 'group'}">
+            <div class="layui-menu-body-title">
+                场景调整 <i class="layui-icon layui-icon-up"></i>
+            </div>
+            <ul>
+                <li lay-options="{id: 1031}"><span>场景缩放</span>
+                    <div id="slideTest5"></div>
+                </li>
+                <li lay-options="{id: 1032}">
+                    <div class="layui-menu-body-title">X轴旋转</div>
+                    <div id="slideTest6"></div>
+                </li>
+                <li lay-options="{id: 1032}">
+                    <div class="layui-menu-body-title">Y轴旋转</div>
+                    <div id="slideTest7"></div>
+                </li>
+                <li lay-options="{id: 1032}">
+                    <div class="layui-menu-body-title">Z轴旋转</div>
+                    <div id="slideTest8"></div>
+                </li>
+            </ul>
+        </li>
+        <li lay-options="{id: 106}">
+            <div class="layui-menu-body-title">
+                <span><i class="layui-icon layui-icon-slider"></i>保存全景漫游</span>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<!--<ul class="layui-nav layui-nav-tree layui-nav-child-r" lay-filter="test" id="editPanel">-->
+<!--    &lt;!&ndash; 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> &ndash;&gt;-->
+<!--    <li class="layui-nav-item layui-nav-itemed">-->
+<!--        <a href="javascript:;" style="color: black"><i class="layui-icon layui-icon-template-1"></i>添加模型</a>-->
+<!--        <dl class="layui-nav-child">-->
+<!--            <dd>-->
+<!--                <div>-->
+<!--                    <a href="javascript:;">模型缩放</a>-->
+<!--                    <div id="slideTest1"></div>-->
+<!--                </div>-->
+<!--            </dd>-->
+<!--            <dd>-->
+<!--                <div>-->
+<!--                    <a href="javascript:;">X轴旋转</a>-->
+<!--                    <div id="slideTest2"></div>-->
+<!--                </div>-->
+<!--            </dd>-->
+<!--            <dd>-->
+<!--                <div>-->
+<!--                    <a href="javascript:;">Y轴旋转</a>-->
+<!--                    <div id="slideTest3"></div>-->
+<!--                </div>-->
+<!--            </dd>-->
+<!--            <dd>-->
+<!--                <a href="javascript:;">Z轴旋转</a>-->
+<!--                <div id="slideTest4"></div>-->
+<!--            </dd>-->
+<!--        </dl>-->
+<!--    </li>-->
+<!--    <li class="layui-nav-item">-->
+<!--        <a href="javascript:;"><i class="layui-icon layui-icon-location"></i>编辑热点</a>-->
+<!--        <dl class="layui-nav-child">-->
+<!--            <dd><a href="">添加热点</a></dd>-->
+<!--            <dd><a href="">移除热点</a></dd>-->
+<!--            <dd><a href="">热点素材选择</a></dd>-->
+<!--        </dl>-->
+<!--    </li>-->
+<!--    <li class="layui-nav-item layui-nav-itemed">-->
+<!--        <a href="javascript:;"><i class="layui-icon layui-icon-picture-fine"></i>添加场景</a>-->
+<!--        <dl class="layui-nav-child">-->
+<!--            <dd>-->
+<!--                <div>-->
+<!--                    <a href="javascript:;">场景缩放</a>-->
+<!--                    <div id="slideTest5"></div>-->
+<!--                </div>-->
+<!--            </dd>-->
+<!--            <dd>-->
+<!--                <div>-->
+<!--                    <a href="javascript:;">X轴旋转</a>-->
+<!--                    <div id="slideTest6"></div>-->
+<!--                </div>-->
+<!--            </dd>-->
+<!--            <dd>-->
+<!--                <div>-->
+<!--                    <a href="javascript:;">Y轴旋转</a>-->
+<!--                    <div id="slideTest7"></div>-->
+<!--                </div>-->
+<!--            </dd>-->
+<!--            <dd>-->
+<!--                <a href="javascript:;">Z轴旋转</a>-->
+<!--                <div id="slideTest8"></div>-->
+<!--            </dd>-->
+<!--        </dl>-->
+<!--    </li>-->
+<!--    <li class="layui-nav-item"><a href=""><i class="layui-icon layui-icon-slider"></i>保存全景漫游</a></li>-->
+<!--</ul>-->
+
+
+</body>
+</html>
