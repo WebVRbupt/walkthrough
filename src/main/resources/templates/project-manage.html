@@ -1,139 +1,142 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>全景行走漫游系统</title>
-  <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>全景行走漫游系统</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
 </head>
 <body>
 <div class="layui-layout layui-layout-admin">
-  <div class="layui-header">
-    <div class="layui-logo layui-hide-xs layui-bg-black">用户项目管理</div>
-    <!-- 头部区域（可配合layui 已有的水平导航） -->
-    <ul class="layui-nav layui-layout-right">
-      <li class="layui-nav-item layui-hide layui-show-md-inline-block">
-        <a href="javascript:;">
-          <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" class="layui-nav-img">
-          tester
-        </a>
-        <dl class="layui-nav-child">
-          <dd><a href="">Your Profile</a></dd>
-          <dd><a href="">Settings</a></dd>
-          <dd><a href="">Sign out</a></dd>
-        </dl>
-      </li>
-      <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
-        <a href="javascript:;">
-          <i class="layui-icon layui-icon-more-vertical"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
-
-  <div class="layui-side layui-bg-black">
-    <div class="layui-side-scroll">
-      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-      <ul class="layui-nav layui-nav-tree" lay-filter="left-item">
-        <li class="layui-nav-item layui-nav-itemed">
-          <a class="" href="javascript:;">项目管理</a>
-          <dl class="layui-nav-child">
-            <dd><a href="javascript:;" class="tab-add" lay-href="./u-project-table" data-id="1" data-title="全景项目管理" >全景项目管理</a></dd>
-          </dl>
-        </li>
-        <li class="layui-nav-item">
-          <a href="javascript:;">素材管理</a>
-          <dl class="layui-nav-child">
-            <dd><a href="javascript:;" class="tab-add" lay-href="./layui" data-id="2" data-title="新建项目">新建项目</a></dd>
-          </dl>
-        </li>
-      </ul>
+    <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-black">用户项目管理</div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+                <a href="javascript:;">
+                    <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+                         class="layui-nav-img">
+                    tester
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">Your Profile</a></dd>
+                    <dd><a href="">Settings</a></dd>
+                    <dd><a href="">Sign out</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+                <a href="javascript:;">
+                    <i class="layui-icon layui-icon-more-vertical"></i>
+                </a>
+            </li>
+        </ul>
     </div>
-  </div>
 
-  <div class="layui-body">
-    <!-- 内容主体区域 -->
-    <div class="layui-tab" lay-filter="tables" lay-allowclose="true">
-      <ul class="layui-tab-title"></ul>
-      <div class="layui-tab-content"></div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="left-item">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">项目管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" class="tab-add" lay-href="./u-project-table" data-id="1"
+                               data-title="全景项目管理">全景项目管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">素材管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" class="tab-add" lay-href="./layui" data-id="2" data-title="新建项目">新建项目</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
-  <div class="layui-footer">
-    <!-- 底部固定区域 -->
-    Copyright@2023
-  </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="layui-tab" lay-filter="tables" lay-allowclose="true">
+            <ul class="layui-tab-title"></ul>
+            <div class="layui-tab-content"></div>
+        </div>
+    </div>
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        Copyright@2023
+    </div>
 </div>
-<script src="../static/layui/layui.js"></script>
+<script src="./layui/layui.js"></script>
 <script>
-  //JS
-  layui.use(['element', 'layer', 'util'], function(){
-    var element = layui.element
-            ,layer = layui.layer
-            ,util = layui.util
-            ,$ = layui.$;
+    //JS
+    layui.use(['element', 'layer', 'util'], function () {
+        var element = layui.element
+            , layer = layui.layer
+            , util = layui.util
+            , $ = layui.$;
 
-    //头部事件
-    util.event('lay-header-event', {
-      //左侧菜单事件
-      menuLeft: function(othis){
-        layer.msg('展开左侧菜单的操作', {icon: 0});
-      }
-      ,menuRight: function(){
-        layer.open({
-          type: 1
-          ,content: '<div style="padding: 15px;">处理右侧面板的操作</div>'
-          ,area: ['260px', '100%']
-          ,offset: 'rt' //右上角
-          ,anim: 5
-          ,shadeClose: true
+        //头部事件
+        util.event('lay-header-event', {
+            //左侧菜单事件
+            menuLeft: function (othis) {
+                layer.msg('展开左侧菜单的操作', {icon: 0});
+            }
+            , menuRight: function () {
+                layer.open({
+                    type: 1
+                    , content: '<div style="padding: 15px;">处理右侧面板的操作</div>'
+                    , area: ['260px', '100%']
+                    , offset: 'rt' //右上角
+                    , anim: 5
+                    , shadeClose: true
+                });
+            }
         });
-      }
-    });
-    //左侧菜单点击事件
-    $('.tab-add').on('click', function () {
-      var dataid = $(this);
-      //判断右侧是否有tab
-      if ($('.layui-tab-title li[lay-id]').length <= 0) {
-        tabFunction.tabAdd(dataid.attr('lay-href'), dataid.attr('data-id'), dataid.attr('data-title'));
-      } else {
-        //判断tab是否已经存在
-        var isExist = false;
-        $.each($('.layui-tab-title li[lay-id]'), function () {
-          //筛选id是否存在
-          if ($(this).attr('lay-id') == dataid.attr("data-id")) {
-            isExist = true;
-          }
+        //左侧菜单点击事件
+        $('.tab-add').on('click', function () {
+            var dataid = $(this);
+            //判断右侧是否有tab
+            if ($('.layui-tab-title li[lay-id]').length <= 0) {
+                tabFunction.tabAdd(dataid.attr('lay-href'), dataid.attr('data-id'), dataid.attr('data-title'));
+            } else {
+                //判断tab是否已经存在
+                var isExist = false;
+                $.each($('.layui-tab-title li[lay-id]'), function () {
+                    //筛选id是否存在
+                    if ($(this).attr('lay-id') == dataid.attr("data-id")) {
+                        isExist = true;
+                    }
+                });
+                //不存在，增加tab
+                if (isExist == false) {
+                    tabFunction.tabAdd(dataid.attr('lay-href'), dataid.attr('data-id'), dataid.attr('data-title'));
+                }
+            }
+            //转到要打开的tab
+            tabFunction.tabChange(dataid.attr('data-id'));
+
         });
-        //不存在，增加tab
-        if (isExist == false) {
-          tabFunction.tabAdd(dataid.attr('lay-href'), dataid.attr('data-id'), dataid.attr('data-title'));
+
+        //定义函数 绑定增加tab，删除tab，切换tab几项事件
+        var tabFunction = {
+            //新增tab url 页面地址 id 对应data-id name标题
+            tabAdd: function (url, id, name) {
+                element.tabAdd('tables', {
+                    title: name,
+                    content: '<iframe data-frameid="' + id + '" scrolling="auto" frameborder="0" src="' + url + ".html" + '" style="width:100%;height:800px"></iframe>',
+                    id: id
+                });
+            },
+            //根据id切换tab
+            tabChange: function (id) {
+                element.tabChange('tables', id)
+            },
+            //关闭指定的tab
+            tabDelete: function (id) {
+                element.tabDelete('tables', id)
+            }
         }
-      }
-      //转到要打开的tab
-      tabFunction.tabChange(dataid.attr('data-id'));
-
     });
-
-    //定义函数 绑定增加tab，删除tab，切换tab几项事件
-    var tabFunction = {
-      //新增tab url 页面地址 id 对应data-id name标题
-      tabAdd: function (url, id, name) {
-        element.tabAdd('tables', {
-          title: name,
-          content: '<iframe data-frameid="' + id + '" scrolling="auto" frameborder="0" src="' + url +".html"+ '" style="width:100%;height:800px"></iframe>',
-          id:id
-        });
-      },
-      //根据id切换tab
-      tabChange: function (id) {
-        element.tabChange('tables',id)
-      },
-      //关闭指定的tab
-      tabDelete: function (id) {
-        element.tabDelete('tables',id)
-      }
-    }
-  });
 </script>
 </body>
 </html>

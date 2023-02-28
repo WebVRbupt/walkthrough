@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>table模块快速使用</title>
-    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="./layui/css/layui.css" media="all">
 </head>
 <body>
 
@@ -11,13 +11,13 @@
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">预览</a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="rename">重命名</a>
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" >编辑</a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="share">分享</a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="delete">删除</a>
 </script>
 
-<script src="../static/layui/layui.js"></script>
-<script>
+<script src="./layui/layui.js"></script>
+<script th:inline="none">
     layui.use('table', function () {
         var table = layui.table;
 
@@ -25,7 +25,7 @@
         table.render({
             elem: '#demo'
             , height: 312
-            , url: '../static/layui/demo1.json' //数据接口
+            , url: './layui/demo1.json' //数据接口
             , page: true //开启分页
             , cols: [[ //表头
                 {field: 'project_id', title: 'ID', width: 80, sort: true, fixed: 'left'}
@@ -42,7 +42,9 @@
             } else if (layEvent === 'rename') {
                 layer.msg('重命名');
             } else if (layEvent === 'edit') {
-                layer.msg('编辑');
+
+                window.open("./sceneEdit.html");
+
             } else if (layEvent === 'share') {
                 layer.msg('分享');
             } else if (layEvent === 'delete') {
