@@ -22,10 +22,10 @@ import java.sql.Date;
 @Table(name = "projects")
 public class Project {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter
     @Getter
-    Integer projectId;
+    Long projectId;
     @Getter
     @Setter
     String projectName;
@@ -34,22 +34,25 @@ public class Project {
     String projectPath;
     @Getter
     @Setter
-    Integer userId;
+    Long userId;
     @Getter
     @Setter
     Date creationTime;
     @Getter
     @Setter
     Integer status;
+    @Getter
+    @Setter
+    String profile;
 
-    public Project(String projectName, String projectPath, Integer userId, Integer status) {
+    public Project(String projectName, String projectPath, Long userId, Integer status) {
         this.projectName = projectName;
         this.projectPath = projectPath;
         this.userId = userId;
         this.status = status;
     }
 
-    public Project(String projectName, String projectPath, Integer userId) {
+    public Project(String projectName, String projectPath, Long userId) {
         this.projectName = projectName;
         this.projectPath = projectPath;
         this.userId = userId;

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.panorama.walkthrough.model.Project;
+import org.panorama.walkthrough.model.ProjectIntro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -26,10 +27,14 @@ class ProjectRepositoryTest {
 
     @Autowired
     ProjectRepository projectRepository;
+
     @BeforeEach
     void setUp() {
-        projectRepository.save(new Project("p1","/p1",3));
-        projectRepository.save(new Project("p2","/p2",3));
+        Project project=new Project();
+        project.setProjectName("123");
+        project.setProfile("vr");
+        project.setUserId(1L);
+        projectRepository.save(project);
     }
 
     @AfterEach
@@ -38,10 +43,9 @@ class ProjectRepositoryTest {
 
     @Test
     void findAllByUserId() {
-        List<Project> list=projectRepository.findAllByUserId(3);
-        for(Project project:list){
-           log.info(project);
-        }
+        List<ProjectInfo> list = projectRepository.findAllByUserId(1L);
+        ProjectInfo projectInfo=list.get(0);
+        log.info(projectInfo.getProjectId()+" "+projectInfo.getProjectName());
     }
 
     @Test

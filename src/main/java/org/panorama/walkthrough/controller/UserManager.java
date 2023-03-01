@@ -1,11 +1,17 @@
 package org.panorama.walkthrough.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.panorama.walkthrough.model.ResponseEntity;
+import org.panorama.walkthrough.model.ResponseEnum;
 import org.panorama.walkthrough.model.User;
 import org.panorama.walkthrough.repositories.UserRepository;
 import org.panorama.walkthrough.service.UserService;
+import org.panorama.walkthrough.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author yang
@@ -22,24 +28,21 @@ public class UserManager {
     UserService userService;
 
     @PostMapping("signin")
-    public String signin(@RequestBody User registrant) {
-        String msg;
-        if (userService.doSignin(registrant)) {
-            msg = "success" + userService.findUserByName(registrant.getUserName());
-        } else {
-            msg = "failed";
+    public ResponseEntity signin(@RequestBody User registrant) {
+        if(userService.doSignin(registrant)){
+            return  ResponseUtil.success();
+        }else{
+            return ResponseUtil.error(ResponseEnum.FAIL);
         }
-        return msg;
     }
 
     @PostMapping("login")
-    public String login(@RequestBody User user) {
-        String msg;
+    public ResponseEntity login(@RequestBody User user, HttpServletRequest request) {
         if(userService.userCheck(user)){
-            msg="登录成功";
+            request.setAttribute("userId",user.getUserId());
+            return ResponseUtil.success();
         }else{
-            msg = "failed";
+            return ResponseUtil.error(ResponseEnum.FAIL);
         }
-        return msg;
     }
 }

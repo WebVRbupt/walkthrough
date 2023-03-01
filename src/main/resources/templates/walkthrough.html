@@ -106,8 +106,8 @@
         // scene
         scene = new THREE.Scene();
 
-        var axes = new THREE.AxisHelper(500);
-        scene.add(axes);
+        // var axes = new THREE.AxisHelper(500);
+        // scene.add(axes);
 
         const ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
         scene.add( ambientLight );
@@ -243,7 +243,7 @@
         navi_circles.add(navi_circle4);
         navi_circles.add(navi_circle5);
         scene.add(navi_circles);
-        navi_circles.visible=false;
+        navi_circles.visible=true;
         circles=[navi_circle1,navi_circle2,navi_circle3,navi_circle4,navi_circle5];
         map={
             pos1:panorama_1,

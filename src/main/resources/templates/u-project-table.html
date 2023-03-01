@@ -29,7 +29,9 @@
             , page: true //开启分页
             , cols: [[ //表头
                 {field: 'project_id', title: 'ID', width: 80, sort: true, fixed: 'left'}
-                , {field: 'project_name', title: '项目名称', width: 100}
+                , {field: 'project_name', title: '项目名称', width: 150}
+                , {field: 'project_describe', title: '项目描述', width: 400}
+                , {field: 'createTime', title: '创建时间', width: 200}
                 , {fixed: 'right', align: 'center', toolbar: '#barDemo'}
             ]]
         });
@@ -40,13 +42,19 @@
             if (layEvent === 'detail') {
                 layer.msg('预览');
             } else if (layEvent === 'rename') {
-                layer.msg('重命名');
+                layer.prompt({title: '项目名称', formType: 2}, function (projectName, index) {
+                    layer.close(index);
+                    layer.prompt({title: '项目描述', formType: 2}, function (projectDescribe, index) {
+                        layer.close(index);
+                        layer.msg('项目信息修改成功');
+                    });
+                });
             } else if (layEvent === 'edit') {
                 layer.msg('编辑');
             } else if (layEvent === 'share') {
-                layer.msg('分享');
+                layer.msg('分享链接已经复制到粘贴板');
             } else if (layEvent === 'delete') {
-                layer.msg('删除');
+                layer.msg('项目删除成功，请刷新页面')
             }
         });
     });
