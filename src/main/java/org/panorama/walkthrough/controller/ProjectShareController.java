@@ -2,11 +2,8 @@ package org.panorama.walkthrough.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author yang
@@ -18,9 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @Controller
 public class ProjectShareController {
-    @GetMapping("/{page}")
-    public String th(@PathVariable("page") String page){
-        log.info("*******"+page+"*******");
+    @RequestMapping("/")
+    public String th(){
+        log.info("*******"+"*******");
+        return "login";
+    }
+    @RequestMapping("{page}")
+    public String page(@PathVariable("page") String page){
         return page;
     }
 }

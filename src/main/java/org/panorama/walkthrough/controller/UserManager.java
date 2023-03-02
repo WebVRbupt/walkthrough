@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.panorama.walkthrough.model.ResponseEntity;
 import org.panorama.walkthrough.model.ResponseEnum;
 import org.panorama.walkthrough.model.User;
-import org.panorama.walkthrough.repositories.UserRepository;
 import org.panorama.walkthrough.service.UserService;
 import org.panorama.walkthrough.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Description TODO
  * @createTime 2023/02/27
  */
-@RestController
+@Controller
 @RequestMapping("/user")
 @Slf4j
 public class UserManager {
@@ -36,13 +38,13 @@ public class UserManager {
         }
     }
 
-    @PostMapping("login")
-    public ResponseEntity login(@RequestBody User user, HttpServletRequest request) {
+    @RequestMapping("login")
+    public RedirectView login(User user, HttpServletRequest request) {
         if(userService.userCheck(user)){
             request.setAttribute("userId",user.getUserId());
-            return ResponseUtil.success();
+            return new RedirectView("project-manage");
         }else{
-            return ResponseUtil.error(ResponseEnum.FAIL);
+            return new RedirectView("login");
         }
     }
 }

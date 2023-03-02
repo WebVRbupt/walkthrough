@@ -3,9 +3,15 @@ POST http://127.0.0.1:8080/stitch/upload
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
-Content-Disposition: form-data; name="element-name"
+Content-Disposition: form-data; name="file"
 Content-Type: text/plain
 
 Name
 --WebAppBoundary
+
+###
+
+### GET request with a header
+GET http://127.0.0.1:8080/stitch/getPanorama
+Accept: application/json
 

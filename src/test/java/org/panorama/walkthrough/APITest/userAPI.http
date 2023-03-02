@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "userName": "vr2",
-  "password": "vr123",
+  "password": "vr12345",
   "email": "vr2@163.com"
 }
 ###
@@ -12,7 +12,7 @@ Content-Type: application/json
 
 {
 "userName": "vr3",
-"password": "vr123",
+"password": "vr12345",
 "email": "vr3@163.com"
 }
 

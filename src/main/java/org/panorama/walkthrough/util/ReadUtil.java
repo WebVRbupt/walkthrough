@@ -12,7 +12,6 @@ import java.io.*;
 public class ReadUtil {
     public static String readLocalFile2String(String path) {
         String res;
-        System.out.println(path);
         try {
             File file = new File(path);
             FileReader fileReader = new FileReader(file);
