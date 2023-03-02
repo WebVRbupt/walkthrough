@@ -41,24 +41,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean userCheck(User man) {
+    public User userCheck(User man) {
         if (null == man || null == man.getUserName()) {
-            return false;
+            return null;
         }
         try {
             User user = userRepository.findUserByUserName(man.getUserName());
             if (null == user) {
-                return false;
+                return null;
             }
             if (StringUtils.equals(EncryptUtil.MD5Encry
                     .encryWithSalt(man.getPassword(), user.getSalt()), user.getPassword())) {
-                return true;
+                return user;
             }else{
-                return false;
+                return null;
             }
         } catch (Exception ex) {
             log.info("userCheck failed...", ex);
-            return false;
+            return null;
         }
     }
     @Override

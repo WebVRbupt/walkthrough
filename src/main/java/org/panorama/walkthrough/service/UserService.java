@@ -11,7 +11,7 @@ import org.panorama.walkthrough.model.User;
  */
 public interface UserService {
     Boolean doSignin(User registrant);
-    Boolean userCheck(User user);
+    User userCheck(User user);
     Boolean dologout(User user);
     User findUserByName(String userName);
 }

@@ -10,7 +10,7 @@ package org.panorama.walkthrough.model;
 public enum ResponseEnum {
 
 
-    SUCCESS(200, "成功"),
+    SUCCESS(0, "成功"),
     FAIL(-1, "失败"),
     ERROR_400(400, "错误的请求"),
     ERROR_404(404, "访问资源不存在"),

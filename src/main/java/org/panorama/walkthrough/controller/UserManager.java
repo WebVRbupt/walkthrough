@@ -11,9 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author yang
@@ -31,20 +31,27 @@ public class UserManager {
 
     @PostMapping("signin")
     public ResponseEntity signin(@RequestBody User registrant) {
-        if(userService.doSignin(registrant)){
-            return  ResponseUtil.success();
-        }else{
+        if (userService.doSignin(registrant)) {
+            return ResponseUtil.success();
+        } else {
             return ResponseUtil.error(ResponseEnum.FAIL);
         }
     }
 
     @RequestMapping("login")
-    public RedirectView login(User user, HttpServletRequest request) {
-        if(userService.userCheck(user)){
-            request.setAttribute("userId",user.getUserId());
-            return new RedirectView("project-manage");
-        }else{
-            return new RedirectView("login");
+    public String login(User user, HttpServletRequest request) {
+        user = userService.userCheck(user);
+        if (null == user) {
+            return "login";
+        } else {
+            HttpSession session=request.getSession();
+            session.setAttribute("user",user);
+            return "project-manage";
         }
+    }
+
+    @RequestMapping("/u-project-table")
+    public String uProjectTable() {
+        return "u-project-table";
     }
 }

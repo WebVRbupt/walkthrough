@@ -1,7 +1,6 @@
 package org.panorama.walkthrough.controller;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @createTime 2023/02/16
  */
 @Log4j2
-@Controller
+//@Controller
 public class ProjectShareController {
     @RequestMapping("/")
     public String th(){

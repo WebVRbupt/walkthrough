@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>table模块快速使用</title>
-    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <title>table</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 </head>
 <body>
 
@@ -16,25 +16,27 @@
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="delete">删除</a>
 </script>
 
-<script src="../static/layui/layui.js"></script>
-<script>
+<script src="/layui/layui.js"></script>
+<script th:inline=none>
     layui.use('table', function () {
         var table = layui.table;
 
+        console.log("table render..")
         //第一个实例
         table.render({
             elem: '#demo'
             , height: 312
-            , url: '../static/layui/demo1.json' //数据接口
+            , url: '/project/list' //数据接口
             , page: true //开启分页
             , cols: [[ //表头
-                {field: 'project_id', title: 'ID', width: 80, sort: true, fixed: 'left'}
-                , {field: 'project_name', title: '项目名称', width: 150}
-                , {field: 'project_describe', title: '项目描述', width: 400}
+                {field: 'projectId', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                , {field: 'projectName', title: '项目名称', width: 150}
+                , {field: 'profile', title: '项目描述', width: 400}
                 , {field: 'createTime', title: '创建时间', width: 200}
                 , {fixed: 'right', align: 'center', toolbar: '#barDemo'}
             ]]
         });
+        console.log("table render..")
         //监听行工具事件
         table.on('tool(project-table)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data //获得当前行数据
