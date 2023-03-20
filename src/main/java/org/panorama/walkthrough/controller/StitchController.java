@@ -11,11 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,25 +64,9 @@ public class StitchController {
         HttpSession session = request.getSession();
         String stitchTempDir = WORK_DIR + "/tmp/1/stitch/";
         if (StitchUtil.doStitch(request)) {
-            showImg(stitchTempDir+"cropped.jpg",response);
             log.info("getPanorama");
         } else {
 
-        }
-    }
-    public static void showImg(String path, HttpServletResponse response){
-        if(path!=null&&!path.equals("")){
-            try {
-                FileInputStream fis = new FileInputStream(path);
-                ServletOutputStream os = response.getOutputStream();
-
-                byte [] b = new byte[1024*8];
-                while(fis.read(b)!=-1){
-                    os.write(b);
-                }
-            }catch (Exception ex){
-
-            }
         }
     }
 }

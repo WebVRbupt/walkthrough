@@ -54,4 +54,8 @@ public class UserManager {
     public String uProjectTable() {
         return "u-project-table";
     }
+    @RequestMapping("/stitch-panorama")
+    public String getStitchPage(){
+        return "stitch-panorama";
+    }
 }

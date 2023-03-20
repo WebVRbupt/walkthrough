@@ -30,7 +30,7 @@ public class StitchUtil {
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line = null;
             while ((line = in.readLine()) != null) {
-                System.out.println(line);
+                log.info(line);
             }
             in.close();
             proc.waitFor();
