@@ -78,6 +78,13 @@
             <version>2.4</version>
         </dependency>
         <!-- 第三方工具 end -->
+
+        <dependency>
+            <groupId>black.ninia</groupId>
+            <artifactId>jep</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>

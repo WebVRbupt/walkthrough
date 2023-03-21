@@ -36,18 +36,20 @@ public class UserManager {
             return ResponseUtil.error(ResponseEnum.FAIL);
         }
     }
+
     @GetMapping("signin")
-    public String signin(){
+    public String signin() {
         return "signin";
     }
+
     @RequestMapping("login")
     public String login(User user, HttpServletRequest request) {
         user = userService.login(user);
         if (null == user) {
             return "login";
         } else {
-            HttpSession session=request.getSession();
-            session.setAttribute("user",user);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
             return "project-manage";
         }
     }
@@ -56,8 +58,14 @@ public class UserManager {
     public String uProjectTable() {
         return "u-project-table";
     }
+
     @RequestMapping("/stitch-panorama")
-    public String getStitchPage(){
+    public String getStitchPage() {
         return "stitch-panorama";
+    }
+
+    @RequestMapping("/u-create-project")
+    public String uCreateProject() {
+        return "u-create-project";
     }
 }
