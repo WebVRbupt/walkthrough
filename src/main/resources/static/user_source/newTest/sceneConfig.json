@@ -1,0 +1,326 @@
+{
+  "metadata": {
+    "projectName": "projectTest"
+  },
+  "scene": {
+    "skybox": [
+      {
+        "name": "pos1",
+        "texture": [
+          "textures_1",
+          "textures_2"
+        ],
+        "position": {
+          "x": 0.7,
+          "y": 0,
+          "z": -4.5
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 2.43,
+          "y": 2.43,
+          "z": 2.43
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 565.4866776461628,
+          "z": 0
+        }
+      },
+      {
+        "name": "pos2",
+        "texture": [
+          "textures_2",
+          "textures_1"
+        ],
+        "position": {
+          "x": 0.7,
+          "y": 0,
+          "z": -7
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 2.43,
+          "y": 2.43,
+          "z": 2.43
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 565.4866776461628,
+          "z": 0
+        }
+      },
+      {
+        "name": "pos3",
+        "texture": [
+          "textures_3",
+          "textures_2"
+        ],
+        "position": {
+          "x": -1.8,
+          "y": 0,
+          "z": -7
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 2.43,
+          "y": 2.43,
+          "z": 2.43
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 565.4866776461628,
+          "z": 0
+        }
+      },
+      {
+        "name": "pos4",
+        "texture": [
+          "textures_4",
+          "textures_2"
+        ],
+        "position": {
+          "x": 0.7,
+          "y": 0,
+          "z": -2
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 2.43,
+          "y": 2.43,
+          "z": 2.43
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 565.4866776461628,
+          "z": 0
+        }
+      },
+      {
+        "name": "pos5",
+        "texture": [
+          "textures_5",
+          "textures_2"
+        ],
+        "position": {
+          "x": 0.7,
+          "y": 0,
+          "z": 0.5
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 2.43,
+          "y": 2.43,
+          "z": 2.43
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 565.4866776461628,
+          "z": 0
+        }
+      }
+    ],
+    "navi": [
+      {
+        "name": "pos1",
+        "map": "pos1",
+        "position": {
+          "x": 0.7,
+          "y": -1.2,
+          "z": -4.5
+        },
+        "geometryScale": {
+          "x": -4,
+          "y": 4,
+          "z": 4
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 0,
+          "z": 0
+        },
+        "texture": "navi_circle_texture"
+      },
+      {
+        "name": "pos2",
+        "map": "pos2",
+        "position": {
+          "x": 0.7,
+          "y": -1.2,
+          "z": -7
+        },
+        "geometryScale": {
+          "x": -4,
+          "y": 4,
+          "z": 4
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 0,
+          "z": 0
+        },
+        "texture": "navi_circle_texture"
+      },
+      {
+        "name": "pos3",
+        "map": "pos3",
+        "position": {
+          "x": -1.8,
+          "y": -1.2,
+          "z": -7
+        },
+        "geometryScale": {
+          "x": -4,
+          "y": 4,
+          "z": 4
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 0,
+          "z": 0
+        },
+        "texture": "navi_circle_texture"
+      },
+      {
+        "name": "pos4",
+        "map": "pos4",
+        "position": {
+          "x": 0.7,
+          "y": -1.2,
+          "z": -2
+        },
+        "geometryScale": {
+          "x": -4,
+          "y": 4,
+          "z": 4
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 0,
+          "z": 0
+        },
+        "texture": "navi_circle_texture"
+      },
+      {
+        "name": "pos5",
+        "map": "pos5",
+        "position": {
+          "x": 0.7,
+          "y": -1.2,
+          "z": 0.5
+        },
+        "geometryScale": {
+          "x": -4,
+          "y": 4,
+          "z": 4
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 0,
+          "z": 0
+        },
+        "texture": "navi_circle_texture"
+      }
+    ],
+    "model": [
+      {
+        "name": "mtlModel",
+        "path": "./user_source/newTest/",
+        "obj": "1.obj",
+        "mtl": "1.mtl",
+        "rotation": {
+          "x": 0,
+          "y": 4.7123889,
+          "z": 0
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "scale": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "textures": [
+    {
+      "name": "textures_1",
+      "type": "skybox",
+      "url": "/user_source/newTest/3.png"
+    },
+    {
+      "name": "textures_2",
+      "type": "skybox",
+      "url": "/user_source/newTest/4.png"
+    },
+    {
+      "name": "textures_3",
+      "type": "skybox",
+      "url": "/user_source/newTest/5.png"
+    },
+    {
+      "name": "textures_4",
+      "type": "skybox",
+      "url": "/user_source/newTest/2.png"
+    },
+    {
+      "name": "textures_5",
+      "type": "skybox",
+      "url": "/user_source/newTest/1.png"
+    },
+    {
+      "name": "navi_circle_texture",
+      "type": "navi",
+      "url": "/images/circle.png"
+    }
+  ]
+}

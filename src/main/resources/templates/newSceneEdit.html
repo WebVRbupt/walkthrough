@@ -8,7 +8,8 @@
 </head>
 <body>
 <script src="./layui/layui.js"></script>
-<script src="./js/app/newSceneEdit.js" type="module"></script>
+<script src="./js/app/newSceneEdit.js" type="module">
+</script>
 
 <script id="vertexShader" type="x-shader/x-vertex">
         // attribute vec3 position;
@@ -23,6 +24,11 @@
             // 投影矩阵projectionMatrix、视图矩阵viewMatrix、模型矩阵modelMatrix
             gl_Position = projectionMatrix*viewMatrix*modelMatrix*vec4( position, 1.0 );
         }
+
+
+
+
+
 
 
 
@@ -47,8 +53,19 @@
 		 }
 
 
-
 </script>
+
+<div class="layui-panel">
+    <div style="padding: 30px;" id="infoPanel">
+        <h3>信息面板</h3>
+        <span id="objectInfo"></span>
+        <ul>
+            <li id="objectPosition"></li>
+            <li id="objectRotate"></li>
+            <li id="objectScale"></li>
+        </ul>
+    </div>
+</div>
 
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
@@ -99,53 +116,84 @@
 
     <div class="layui-panel" id="editPanel">
         <ul class="layui-menu" id="sceneEditMenu">
-            <li lay-options="{id: 100}">
+            <li lay-options="{id: 1}">
                 <div class="layui-menu-body-title">
                     <p><i class="layui-icon layui-icon-template-1"></i>添加模型</p>
                 </div>
             </li>
-            <li class="layui-menu-item-group layui-menu-item-down" lay-options="{type: 'group'}">
-                <div class="layui-menu-body-title">
-                    模型调整 <i class="layui-icon layui-icon-up"></i>
-                </div>
-                <ul>
-                    <li lay-options="{id: 1031}"><span>模型缩放</span>
-                        <div id="slideTest1"></div>
-                    </li>
-                    <li lay-options="{id: 1032}">
-                        <div class="layui-menu-body-title">X轴旋转</div>
-                        <div id="slideTest2"></div>
-                    </li>
-                    <li lay-options="{id: 1032}">
-                        <div class="layui-menu-body-title">Y轴旋转</div>
-                        <div id="slideTest3"></div>
-                    </li>
-                    <li lay-options="{id: 1032}">
-                        <div class="layui-menu-body-title">Z轴旋转</div>
-                        <div id="slideTest4"></div>
-                    </li>
-                </ul>
-            </li>
-            <li lay-options="{id: 101}">
-                <div class="layui-menu-body-title">
-                    <span><i class="layui-icon layui-icon-location"></i>添加热点</span>
-                </div>
-            </li>
-            <li class="layui-menu-item-divider"></li>
-
-            <li class="layui-menu-item-divider"></li>
-            <li lay-options="{id: 104}">
+            <li lay-options="{id: 2}">
                 <div class="layui-menu-body-title">
                     <span><i class="layui-icon layui-icon-picture-fine"></i>添加场景</span>
                 </div>
             </li>
+            <li lay-options="{id: 3}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-location"></i>添加热点</span>
+                </div>
+            </li>
+            <!--            <li class="layui-menu-item-group layui-menu-item-down" lay-options="{type: 'group'}">-->
+            <!--                <div class="layui-menu-body-title">-->
+            <!--                    模型调整 <i class="layui-icon layui-icon-up"></i>-->
+            <!--                </div>-->
+            <!--                <ul>-->
+            <!--                    <li lay-options="{id: 1031}"><span>模型缩放</span>-->
+            <!--                        <div id="slideTest1"></div>-->
+            <!--                    </li>-->
+            <!--                    <li lay-options="{id: 1032}">-->
+            <!--                        <div class="layui-menu-body-title">X轴旋转</div>-->
+            <!--                        <div id="slideTest2"></div>-->
+            <!--                    </li>-->
+            <!--                    <li lay-options="{id: 1032}">-->
+            <!--                        <div class="layui-menu-body-title">Y轴旋转</div>-->
+            <!--                        <div id="slideTest3"></div>-->
+            <!--                    </li>-->
+            <!--                    <li lay-options="{id: 1032}">-->
+            <!--                        <div class="layui-menu-body-title">Z轴旋转</div>-->
+            <!--                        <div id="slideTest4"></div>-->
+            <!--                    </li>-->
+            <!--                </ul>-->
+            <!--            </li>-->
+            <li lay-options="{id: 4}">
+                <div class="layui-menu-body-title">
+                    <!--                    <span><i class="layui-icon layui-icon-slider"></i>Select</span>-->
+                    <div class="layui-btn-group">
+                        <button type="button" class="layui-btn  layui-btn-primary" id="prevButton">
+                            <i class="layui-icon layui-icon-left"></i>
+                        </button>
+                        <button type="button" class="layui-btn layui-btn-primary">Select</button>
+                        <button type="button" class="layui-btn  layui-btn-primary" id="nextButton">
+                            <i class="layui-icon layui-icon-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </li>
+            <li lay-options="{id: 5}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>Move</span>
+                </div>
+            </li>
+            <li lay-options="{id: 6}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>Rotate</span>
+                </div>
+            </li>
+            <li lay-options="{id: 7}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>Scale</span>
+                </div>
+            </li>
+
+            <li class="layui-menu-item-divider"></li>
+
+            <li class="layui-menu-item-divider"></li>
+
             <li class="layui-menu-item-group layui-menu-item-down" lay-options="{type: 'group'}">
                 <div class="layui-menu-body-title">
-                    场景调整 <i class="layui-icon layui-icon-up"></i>
+                    物体调整 <i class="layui-icon layui-icon-up"></i>
                 </div>
                 <ul>
-                    <li lay-options="{id: 1031}"><span>场景缩放</span>
-                        <div id="slideTest5"></div>
+                    <li lay-options="{id: 1031}"><span>物体缩放</span>
+                        <div id="slideScale"></div>
                     </li>
                     <li lay-options="{id: 1032}">
                         <div class="layui-menu-body-title">X轴旋转</div>
@@ -161,16 +209,47 @@
                     </li>
                 </ul>
             </li>
-            <li lay-options="{id: 106}">
+            <li lay-options="{id: 8}">
                 <div class="layui-menu-body-title">
                     <span><i class="layui-icon layui-icon-find-fill"></i>比例标定</span>
                 </div>
             </li>
-            <li lay-options="{id: 107}">
+            <li lay-options="{id: 9}">
                 <div class="layui-menu-body-title">
                     <span><i class="layui-icon layui-icon-slider"></i>保存全景漫游</span>
                 </div>
             </li>
+            <li lay-options="{id: 10}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>清除场景</span>
+                </div>
+            </li>
+            <li lay-options="{id: 11}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>从json文件中恢复场景</span>
+                </div>
+            </li>
+            <li lay-options="{id: 12}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>导出为GLTF模型</span>
+                </div>
+            </li>
+            <li lay-options="{id: 13}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>从GLTF导入场景</span>
+                </div>
+            </li>
+            <li lay-options="{id: 14}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-slider"></i>Step2Json</span>
+                </div>
+            </li>
+            <li lay-options="{id: 15}">
+                <div class="layui-menu-body-title">
+                    <span><i class="layui-icon layui-icon-password"></i>锁定物体</span>
+                </div>
+            </li>
+
         </ul>
     </div>
 

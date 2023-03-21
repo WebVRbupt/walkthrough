@@ -9,6 +9,20 @@
 
 }
 
+#infoPanel {
+
+    position: absolute;
+    z-index: 999;
+    top: 150px;
+    left: 20px;
+    opacity: 70%;
+    user-select: none;
+    width: 200px;
+    height: 100px;
+    background-color: white;
+
+}
+
 #info {
     position: absolute;
     top: 0px;
@@ -23,6 +37,8 @@
     pointer-events: none;
     z-index: 1; /* TODO Solve this in HTML */
 }
+
+
 
 a {
     color: #ffffff;

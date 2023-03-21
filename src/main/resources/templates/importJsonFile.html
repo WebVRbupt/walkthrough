@@ -51,7 +51,7 @@
     function onLoadProject(newValue) {
         if (settings.loadProject) {
             scene = new THREE.Scene;
-            fetch('../static/user_source/newTest/project.json')
+            fetch('./user_source/sceneConfig.json')
                 .then(data => data.json())
                 .then((data) => {
                         var loader = new THREE.ObjectLoader();
@@ -71,7 +71,7 @@
         cube.rotation.y += 0.01;
 
         renderer.render(scene, camera);
-    };
+    }
     animate();
 </script>
 </body>
