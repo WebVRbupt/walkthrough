@@ -8,6 +8,7 @@ import org.panorama.walkthrough.repositories.ProjectInfo;
 import org.panorama.walkthrough.service.project.ProjectService;
 import org.panorama.walkthrough.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +22,14 @@ import java.util.List;
  * @Description TODO
  * @createTime 2023/03/01
  */
-@RestController
+@Controller
 @RequestMapping("/project")
 public class ProjectManager {
     @Autowired
     ProjectService projectService;
 
     @GetMapping("list")
+    @ResponseBody
     public ResponseEntity getUserProjects(HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user= (User) session.getAttribute("user");
@@ -40,6 +42,7 @@ public class ProjectManager {
     }
 
     @PostMapping("add")
+    @ResponseBody
     public ResponseEntity addProject(@RequestBody ProjectIntro projectIntro, HttpServletRequest request) {
         if (projectService.addProject(projectIntro, request)) {
             return ResponseUtil.success();
@@ -49,6 +52,7 @@ public class ProjectManager {
     }
 
     @GetMapping("delete")
+    @ResponseBody
     public ResponseEntity deleteProject(@RequestParam("projectId") Long projectId) {
         if (projectService.deleteProject(projectId)) {
             return ResponseUtil.success();
@@ -58,11 +62,16 @@ public class ProjectManager {
     }
 
     @PostMapping("updateIntro")
+    @ResponseBody
     public ResponseEntity updateProjectIntro(@RequestBody ProjectIntro projectIntro) {
         if (projectService.updateProjectIntro(projectIntro)) {
             return ResponseUtil.success();
         } else {
             return ResponseUtil.error(ResponseEnum.FAIL);
         }
+    }
+    @GetMapping("edit")
+    public String edit(@RequestParam("projectId")Long projectId){
+       return "newSceneEdit";
     }
 }

@@ -32,7 +32,7 @@
                 {field: 'projectId', title: 'ID', width: 80, sort: true, fixed: 'left'}
                 , {field: 'projectName', title: '项目名称', width: 150}
                 , {field: 'profile', title: '项目描述', width: 400}
-                , {field: 'createTime', title: '创建时间', width: 200}
+                , {field: 'creationTime', title: '创建时间', width: 200}
                 , {fixed: 'right', align: 'center', toolbar: '#barDemo'}
             ]]
         });
@@ -52,11 +52,14 @@
                     });
                 });
             } else if (layEvent === 'edit') {
-                layer.msg('编辑');
+                var projectId=data.projectId;
+                var location='/project/edit?projectId='+projectId;
+                console.log(projectId);
+                window.location=location;
             } else if (layEvent === 'share') {
                 layer.msg('分享链接已经复制到粘贴板');
             } else if (layEvent === 'delete') {
-                layer.msg('项目删除成功，请刷新页面')
+                layer.msg('项目删除成功，请刷新页面');
             }
         });
     });

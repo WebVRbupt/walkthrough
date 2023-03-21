@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>全景行走漫游管理系统</title>
-    <link rel="stylesheet" href="./layui/css/layui.css">
-    <link rel="stylesheet" type="text/css" href="css/sceneEdit.css">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="/css/sceneEdit.css">
 </head>
 <body>
-<script src="./layui/layui.js"></script>
-<script src="./js/app/newSceneEdit.js" type="module">
+<script src="/layui/layui.js"></script>
+<script src="/js/app/newSceneEdit.js" type="module">
 </script>
 
 <script id="vertexShader" type="x-shader/x-vertex">
@@ -24,14 +24,6 @@
             // 投影矩阵projectionMatrix、视图矩阵viewMatrix、模型矩阵modelMatrix
             gl_Position = projectionMatrix*viewMatrix*modelMatrix*vec4( position, 1.0 );
         }
-
-
-
-
-
-
-
-
 </script>
 <!-- 片元着色器 -->
 <script id="fragmentShader" type="x-shader/x-fragment">
@@ -51,8 +43,6 @@
 			vec3 color = mix(colorFromBox0.xyz,colorFromBox1.xyz,Uprogress);
 			gl_FragColor = vec4(color,alpha);
 		 }
-
-
 </script>
 
 <div class="layui-panel">
@@ -71,7 +61,7 @@
     <div class="layui-header">
         <div class="layui-logo layui-hide-xs layui-bg-black">
             <a class="logo" href="/v2/">
-                <img src="./images/app/BUPT_LOGO.png" alt="全景行走漫游管理系统" id="BUPTLOGO">
+                <img src="/images/app/BUPT_LOGO.png" alt="全景行走漫游管理系统" id="BUPTLOGO">
             </a>
             全景行走漫游管理系统
         </div>

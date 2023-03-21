@@ -364,14 +364,14 @@ function loadModel(parentObject) {
     let model, panoram, obj;
 
     new MTLLoader(manager)
-        .setPath('./user_source/newTest/')
+        .setPath('/user_source/newTest/')
         .load('1.mtl', function (materials) {
 
             materials.preload();
 
             new OBJLoader(manager)
                 .setMaterials(materials)
-                .setPath('./user_source/newTest/')
+                .setPath('/user_source/newTest/')
                 .load('1.obj', function (object) {
                     model = object;
                     obj = model;
