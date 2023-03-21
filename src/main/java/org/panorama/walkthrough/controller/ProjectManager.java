@@ -5,7 +5,7 @@ import org.panorama.walkthrough.model.ResponseEntity;
 import org.panorama.walkthrough.model.ResponseEnum;
 import org.panorama.walkthrough.model.User;
 import org.panorama.walkthrough.repositories.ProjectInfo;
-import org.panorama.walkthrough.service.ProjectService;
+import org.panorama.walkthrough.service.project.ProjectService;
 import org.panorama.walkthrough.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +50,7 @@ public class ProjectManager {
 
     @GetMapping("delete")
     public ResponseEntity deleteProject(@RequestParam("projectId") Long projectId) {
-        if (projectService.deleteByProjectId(projectId)) {
+        if (projectService.deleteProject(projectId)) {
             return ResponseUtil.success();
         } else {
             return ResponseUtil.error(ResponseEnum.FAIL);

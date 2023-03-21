@@ -4,13 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.panorama.walkthrough.model.ResponseEntity;
 import org.panorama.walkthrough.model.ResponseEnum;
 import org.panorama.walkthrough.model.User;
-import org.panorama.walkthrough.service.UserService;
+import org.panorama.walkthrough.service.user.UserService;
 import org.panorama.walkthrough.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,18 +27,22 @@ public class UserManager {
     @Autowired
     UserService userService;
 
-    @PostMapping("signin")
-    public ResponseEntity signin(@RequestBody User registrant) {
-        if (userService.doSignin(registrant)) {
+    @PostMapping("doSignin")
+    @ResponseBody
+    public ResponseEntity doSignin(@RequestBody User registrant) {
+        if (userService.signin(registrant)) {
             return ResponseUtil.success();
         } else {
             return ResponseUtil.error(ResponseEnum.FAIL);
         }
     }
-
+    @GetMapping("signin")
+    public String signin(){
+        return "signin";
+    }
     @RequestMapping("login")
     public String login(User user, HttpServletRequest request) {
-        user = userService.userCheck(user);
+        user = userService.login(user);
         if (null == user) {
             return "login";
         } else {

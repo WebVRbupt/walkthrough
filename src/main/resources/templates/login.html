@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 </head>
 <body>
+<div class="layui-header">
+    <!-- 头部区域（可配合layui 已有的水平导航） -->
+    <a href="/user/signin" class="layui-btn layui-layout-right">signin</a>
+</div>
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
     <legend>用户登录</legend>
 </fieldset>
@@ -25,7 +29,8 @@
         <div class="layui-inline">
             <label class="layui-form-label">密码</label>
             <div class="layui-input-inline">
-                <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码"
+                       autocomplete="off" class="layui-input">
             </div>
         </div>
     </div>
@@ -41,7 +46,7 @@
     layui.use(['form'], function () {
         var form = layui.form
             , layer = layui.layer
-            , $=layer.jquery;
+            , $ = layer.jquery;
         //监听提交
         form.on('submit(login)', function (data) {
             layer.alert(JSON.stringify(data.field), {
@@ -52,9 +57,9 @@
 
         //自定义验证规则
         form.verify({
-           pass: [
+            pass: [
                 /^[\S]{6,12}$/
-                ,'密码必须6到12位，且不能出现空格'
+                , '密码必须6到12位，且不能出现空格'
             ]
         });
     });
