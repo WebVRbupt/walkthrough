@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * @author yang
  * @version 1.0.0
@@ -26,7 +24,7 @@ class imageStitchServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        work_dir = work_dir_prefix + "/tmp/1/stitch";
+        work_dir = work_dir_prefix + "/tmp/9/stitch";
     }
 
     @AfterEach
