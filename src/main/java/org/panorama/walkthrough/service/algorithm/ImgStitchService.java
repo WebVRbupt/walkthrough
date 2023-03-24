@@ -16,13 +16,14 @@ public abstract class ImgStitchService {
     public Boolean stitch(String images_dir){
         if(doStich(images_dir)
                 &&prepare(images_dir)
-                    &&cleanUp(images_dir)){
+                    &&after(images_dir)){
             return true;
         }else{
             return false;
         }
     }
-    protected abstract Boolean doStich(String images_dir);
-    protected abstract Boolean prepare(String images_dir);
-    protected abstract Boolean cleanUp(String images_dir);
+    abstract Boolean doStich(String images_dir);
+    abstract Boolean prepare(String images_dir);
+    abstract Boolean after(String images_dir);
+    public abstract Boolean cleanUp(String images_dir);
 }

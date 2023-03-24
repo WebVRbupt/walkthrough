@@ -85,6 +85,7 @@ public class StitchController {
             bytes = new byte[inputStream.available()];
             inputStream.read(bytes, 0, inputStream.available());
         }
+        imgStitchService.cleanUp(stitchTempDir);
         return bytes;
     }
 }
