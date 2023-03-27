@@ -10,7 +10,7 @@
 <table id="demo" lay-filter="project-table"></table>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">预览</a>
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="rename">重命名</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="rename">修改信息</a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="share">分享</a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="delete">删除</a>
@@ -19,11 +19,12 @@
 <script src="/layui/layui.js"></script>
 <script th:inline=none>
     layui.use('table', function () {
-        var table = layui.table;
+        var table = layui.table,
+            $ = layui.jquery;
 
         console.log("table render..")
         //第一个实例
-        table.render({
+        var projectTable = table.render({
             elem: '#demo'
             , height: 312
             , url: '/project/list' //数据接口
@@ -41,27 +42,61 @@
         table.on('tool(project-table)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data //获得当前行数据
                 , layEvent = obj.event; //获得 lay-event 对应的值
+            var projectId = data.projectId; //获得项目ID
             if (layEvent === 'detail') {
-                layer.msg('预览');
+                barFunction.barDetail(projectId);
             } else if (layEvent === 'rename') {
-                layer.prompt({title: '项目名称', formType: 2}, function (projectName, index) {
-                    layer.close(index);
-                    layer.prompt({title: '项目描述', formType: 2}, function (projectDescribe, index) {
-                        layer.close(index);
-                        layer.msg('项目信息修改成功');
-                    });
-                });
+                barFunction.barRename(projectId);
             } else if (layEvent === 'edit') {
-                var projectId=data.projectId;
-                var location='/project/edit?projectId='+projectId;
-                console.log(projectId);
-                window.location=location;
+                barFunction.barEdit(projectId);
             } else if (layEvent === 'share') {
-                layer.msg('分享链接已经复制到粘贴板');
+                barFunction.barShare(projectId);
             } else if (layEvent === 'delete') {
-                layer.msg('项目删除成功，请刷新页面');
+                barFunction.barDelete(projectId);
             }
         });
+        var barFunction = {
+            barDetail: function (projectId) {
+                layer.msg('预览: ' + projectId);
+            },
+            barRename: function (projectId) {
+                layer.prompt({title: '项目名称', formType: 2}, function (projectName, index) {
+                    layer.close(index);
+                    layer.prompt({title: '项目描述', formType: 2}, function (profile, index) {
+                        layer.close(index);
+                        var data = {
+                            'projectId': projectId,
+                            'projectName': projectName,
+                            'profile': profile
+                        };
+                        var dataJson = JSON.stringify(data);
+                        $.ajax({
+                            url: '/project/updateIntro',
+                            type: 'post',
+                            dataType: 'json',
+                            contentType: "application/json",
+                            data: dataJson,
+                            success: function (resp) {
+                                window.location.reload();
+                            },
+                            error: function (){
+                                layer.msg('修改项目信息失败');
+                            }
+                        });
+                    });
+                });
+            },
+            barEdit: function (projectId) {
+                var location = '/project/edit?projectId=' + projectId;
+                window.location = location;
+            },
+            barShare: function (projectId) {
+                layer.msg('分享链接已经复制到粘贴板' + projectId);
+            },
+            barDelete: function (projectId) {
+                layer.msg('项目删除成功，请刷新页面' + projectId);
+            }
+        }
     });
 </script>
 </body>

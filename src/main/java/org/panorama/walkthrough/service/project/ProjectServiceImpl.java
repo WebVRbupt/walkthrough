@@ -104,7 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
         try {
             Project project = projectRepository.findByProjectId(projectIntro.getProjectId());
             project.setProjectName(projectIntro.getProjectName());
-            project.setProfile(project.getProfile());
+            project.setProfile(projectIntro.getProfile());
             this.updateProject(project);
             return true;
         } catch (Exception ex) {

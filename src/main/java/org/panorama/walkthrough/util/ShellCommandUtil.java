@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 @Slf4j
 public class ShellCommandUtil {
     /**
-     * @param command if you don't specify a #direction,command will use relative path.
+     * @param command if you don't specify a #directory,command will use relative path.
      * @title runCommand
      * @description run a shell command
      */
