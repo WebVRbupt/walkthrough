@@ -130,8 +130,8 @@ function initPage() {
 
     mainCamera.position.set(0, 0, 1);
 
-    let input = document.querySelector("input");
-    input.addEventListener('change', onPicUpload);
+    // let input = document.querySelector("input");
+    // input.addEventListener('change', onPicUpload);
 
     preview();
     render();
@@ -140,6 +140,8 @@ function initPage() {
 
 
 const onPicUpload = (e) => {
+
+    console.log(e.target.files[0]);
 
     console.log("file upload");
     const file = e.target.files[0];
@@ -151,6 +153,21 @@ const onPicUpload = (e) => {
     updateImage(() => {
         regularProcess();
     });
+}
+
+export function genCubeMap(file,resolve){
+
+    console.log("genCubeMap");
+
+    const format = file.name.split('.').slice(-1)[0];
+
+    imageProps.file = file;
+    imageProps.loaded = true;
+    imageProps.format = format;
+    updateImage(() => {
+        regularProcess(()=>{},resolve);
+    });
+
 }
 
 const updateImage = (callback = () => {
@@ -201,7 +218,7 @@ const onPicUploadError = () => {
 }
 
 
-const regularProcess = (callback) => {
+const regularProcess = (callback,resolve) => {
 
     console.log("call regularProcess()");
     procRenderUE4(saveProps.resolution, href => {
@@ -209,12 +226,12 @@ const regularProcess = (callback) => {
     }, progress => {
         const {progNow, progTotal} = progress;
         console.log("progress:" + progNow / progTotal * 100)
-    });
+    },resolve);
 }
 
 const procRenderUE4 = (size = 64, callback = href => {
 }, progress = prog => {
-}) => {
+},resolve) => {
 
     renderCatch.progNow = 0;
     renderCatch.progTotal = 4;
@@ -278,7 +295,9 @@ const procRenderUE4 = (size = 64, callback = href => {
     canvas.toBlob(blob => {
 
         console.log("transfer canvas to blob");
-        downFileToLocal("texture", blob);
+        // downFileToLocal("texture", blob);
+        resolve(blob);
+
 
     }, "image/png");
 

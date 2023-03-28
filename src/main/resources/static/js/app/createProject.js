@@ -2,6 +2,8 @@
 // import * as ReactDOM from "/js/build/react-dom.development.js"
 // import { useState } from 'react';
 
+import { genCubeMap } from '/js/app/generateTextures.js'
+
 const steps = [
     {
         title: '项目信息',
@@ -23,38 +25,7 @@ const steps = [
 
 
 const ProjectInfoContent = () => {
-    // return (
-    //     <div className={"layui-timeline-content"}>
-    //         <h3 className={"layui-timeline-title"}>项目信息</h3>
-    //         <div className={"layui-form-item"}>
-    //             <div className={"layui-inline"}>
-    //                 <label className={"layui-form-label"}>项目名称</label>
-    //                 <div className={"layui-input-inline"}>
-    //                     <input type={"tel"} name={"phone"} lay-verify={"required|phone"} autoComplete={"off"}
-    //                            className={"layui-input"}/>
-    //                 </div>
-    //             </div>
-    //             <div className={"layui-inline"}>
-    //                 <div className={"layui-input-inline"}>
-    //                     <select name={"quiz"}>
-    //                         <optgroup label={"项目分类"}>
-    //                             <option value={"房间"}>房间</option>
-    //                             <option value={"展厅"}>展厅</option>
-    //                             <option value={"工厂"}>工厂</option>
-    //                         </optgroup>
-    //                     </select>
-    //                 </div>
-    //             </div>
-    //             <div className={"layui-inline"}>
-    //                 <label className={"layui-form-label"}>项目描述</label>
-    //                 <div className={"layui-input-inline"}>
-    //                     <input type={"tel"} name={"phone"} lay-verify={"required|phone"} autoComplete={"off"}
-    //                            className={"layui-input"}/>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </div>
-    // )
+
     const onFinish = () => {
 
     }
@@ -136,15 +107,6 @@ const ProjectInfoContent = () => {
 
 const UploadSceneContent = () => {
 
-    // return (
-    //     <div className={"layui-upload"}>
-    //         <button type={"button"} className={"layui-btn"} id={"test2"}>添加场景</button>
-    //         <blockquote className={"layui-elem-quote layui-quote-nm"} style={{marginTop: "10px"}}>
-    //             预览图：
-    //             <div className={"layui-upload-list"} id={"demo2"}></div>
-    //         </blockquote>
-    //     </div>
-    // )
     let sceneName = null;
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
@@ -235,10 +197,11 @@ const UploadSceneContent = () => {
     const handleBeforeUpload = (file, fileList) => {
 
         // setCurrentFile(file);
-        console.log(file,"before change name");
-        console.log(fileList);
-        file.name = "测试场景123";
-        console.log(file,"after change name");
+        // console.log(currentfile,"before change name");
+        // console.log(currentfileList);
+        // console.log(fileList);
+        // fileList[0].name = "测试场景123";
+
 
         // return new Promise((resolve)=>{
         //
@@ -249,8 +212,13 @@ const UploadSceneContent = () => {
         //     file.name=sceneName;
         //
         // })
+        console.log(file);
+        return new Promise(resolve=>{
 
 
+            genCubeMap(file,resolve);
+
+        })
 
     }
     const handleAddSceneClick = () => {
@@ -273,7 +241,7 @@ const UploadSceneContent = () => {
     return (
         <div>
             <antd.Upload
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                action="/uploadPic"
                 listType="picture-card"
                 fileList={fileList}
                 onPreview={handlePreview}
@@ -341,34 +309,7 @@ const UploadSceneContent = () => {
 }
 
 const UploadModelContent = () => {
-    // return (
-    //     <div>
-    //         <h3 className={"layui-timeline-title"}>上传空间模型</h3>
-    //         <div className={"layui-upload"}>
-    //             <button type={"button"} className={"layui-btn layui-btn-normal"} id={"testList"}>选择模型</button>
-    //             <div className={"layui-upload-list"} style={{maxWidth: "1000px"}}>
-    //                 <table className={"layui-table"}>
-    //                     <colgroup>
-    //                         <col/>
-    //                         <col width={"150"}/>
-    //                         <col width={"260"}/>
-    //                         <col width={"150"}/>
-    //                     </colgroup>
-    //                     <thead>
-    //                     <tr>
-    //                         <th>文件名</th>
-    //                         <th>大小</th>
-    //                         <th>上传进度</th>
-    //                         <th>操作</th>
-    //                     </tr>
-    //                     </thead>
-    //                     <tbody id={"demoList"}></tbody>
-    //                 </table>
-    //             </div>
-    //             <button type={"button"} className={"layui-btn"} id={"testListAction"}>开始上传</button>
-    //         </div>
-    //     </div>
-    // )
+
 
     const props = {
         name: 'file',
@@ -469,94 +410,6 @@ const App = () => {
     );
 };
 
-layui.use(['upload', 'element', 'layer'], function () {
-    var $ = layui.jquery
-        , upload = layui.upload
-        , element = layui.element
-        , layer = layui.layer;
-    //演示多文件列表
-    var uploadListIns = upload.render({
-        elem: '#testList'
-        , elemList: $('#demoList') //列表元素对象
-        , url: '/uploadPic' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
-        , accept: 'file'
-        , multiple: true
-        , number: 3
-        , auto: false
-        , bindAction: '#testListAction'
-        , choose: function (obj) {
-            var that = this;
-            var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
-            //读取本地文件
-            obj.preview(function (index, file, result) {
-                var tr = $(['<tr id="upload-' + index + '">'
-                    , '<td>' + file.name + '</td>'
-                    , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
-                    , '<td><div class="layui-progress" lay-filter="progress-demo-' + index + '"><div class="layui-progress-bar" lay-percent=""></div></div></td>'
-                    , '<td>'
-                    , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
-                    , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
-                    , '</td>'
-                    , '</tr>'].join(''));
-
-                //单个重传
-                tr.find('.demo-reload').on('click', function () {
-                    obj.upload(index, file);
-                });
-
-                //删除
-                tr.find('.demo-delete').on('click', function () {
-                    delete files[index]; //删除对应的文件
-                    tr.remove();
-                    uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
-                });
-
-                that.elemList.append(tr);
-                element.render('progress'); //渲染新加的进度条组件
-            });
-        }
-        , done: function (res, index, upload) { //成功的回调
-            var that = this;
-            //if(res.code == 0){ //上传成功
-            var tr = that.elemList.find('tr#upload-' + index)
-                , tds = tr.children();
-            tds.eq(3).html(''); //清空操作
-            delete this.files[index]; //删除文件队列已经上传成功的文件
-            return;
-            //}
-            this.error(index, upload);
-        }
-        , allDone: function (obj) { //多文件上传完毕后的状态回调
-            console.log(obj)
-        }
-        , error: function (index, upload) { //错误回调
-            var that = this;
-            var tr = that.elemList.find('tr#upload-' + index)
-                , tds = tr.children();
-            tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
-        }
-        , progress: function (n, elem, e, index) { //注意：index 参数为 layui 2.6.6 新增
-            element.progress('progress-demo-' + index, n + '%'); //执行进度条。n 即为返回的进度百分比
-        }
-    });
-
-    //多图片上传
-    upload.render({
-        elem: '#test2'
-        , url: '/uploadPic' //此处配置你自己的上传接口即可
-        , multiple: true
-        , before: function (obj) {
-            //预读本地文件示例，不支持ie8
-            obj.preview(function (index, file, result) {
-                $('#demo2').append('<img src="' + result + '" alt="' + file.name + '" class="layui-upload-img" width="200px">')
-            });
-        }
-        , done: function (res) {
-            //上传完毕
-        }
-    });
-
-});
 
 const app = document.getElementById("app");
 const root = ReactDOM.createRoot(app);
