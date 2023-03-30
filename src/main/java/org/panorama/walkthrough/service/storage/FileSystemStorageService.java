@@ -1,9 +1,11 @@
 package org.panorama.walkthrough.service.storage;
 
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,15 +27,32 @@ public class FileSystemStorageService implements StorageService {
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
+        init();
     }
 
     @Override
-    public void store(MultipartFile file) {
+    public void store(MultipartFile file, String prefix, String picId) {
+        String fileName = file.getOriginalFilename();
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to storage empty file" + file.getOriginalFilename());
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
+
+            String suffix = fileName.substring(fileName.lastIndexOf('.'));
+            String storageName = prefix + picId + suffix;
+            try {
+                if (!Files.exists(rootLocation.resolve(prefix))) {
+                    Files.createDirectories(rootLocation.resolve(prefix));
+                }
+
+            } catch (IOException e) {
+
+                throw new StorageException("Could not initialize storage", e);
+            }
+
+
+
+            Files.copy(file.getInputStream(), rootLocation.resolve(storageName));
         } catch (IOException e) {
             throw new StorageException("Failed to store file" + file.getOriginalFilename(), e);
         }
@@ -41,6 +60,16 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public void init() {
+
+        try {
+            if (!Files.exists(this.rootLocation)) {
+                Files.createDirectory(this.rootLocation);
+            }
+
+        } catch (IOException e) {
+
+            throw new StorageException("Could not initialize storage", e);
+        }
 
     }
 }

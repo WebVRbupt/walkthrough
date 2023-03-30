@@ -1,7 +1,8 @@
 import * as THREE from '../build/three.module.js';
 
 
-const canvasProps = {width: 1280, height: 720, vww: 0.64, vhw: 0.36};
+// const canvasProps = {width: 1280, height: 720, vww: 0.64, vhw: 0.36};
+const canvasProps = {}
 const renderProps = {isRendering: false, exposure: 4, maxExposure: 12};
 const imageProps = {loaded: false, file: null, format: ''};
 const saveProps = {

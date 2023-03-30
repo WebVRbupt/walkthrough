@@ -2,13 +2,11 @@ package org.panorama.walkthrough.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import org.panorama.walkthrough.model.Project;
 import org.panorama.walkthrough.service.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,19 +28,20 @@ public class UploadPictureController {
     private final StorageService storageService;
 
     @Autowired
-    public UploadPictureController(StorageService service){
+    public UploadPictureController(StorageService service) {
         this.storageService = service;
     }
 
-    @PostMapping("/uploadPic")
-    String uploadPic(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/uploadPic/{userId}/{projectId}/{picId}")
+    String uploadPic(@RequestParam("file") MultipartFile file, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId, @PathVariable("picId") String picId) {
         String fileName = file.getOriginalFilename();
         System.out.println(fileName);
-        System.out.printf("upload pic");
+        System.out.println("upload pic");
         JSONObject statusInfo = new JSONObject();
         statusInfo.put("code", 0);
         statusInfo.put("msg", "upload success");
-       storageService.store(file);
+        String prefix = userId + "/" + projectId+"/";
+        storageService.store(file, prefix, picId);
 
         return JSON.toJSONString(statusInfo);
     }

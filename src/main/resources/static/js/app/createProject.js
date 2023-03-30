@@ -2,7 +2,13 @@
 // import * as ReactDOM from "/js/build/react-dom.development.js"
 // import { useState } from 'react';
 
-import { genCubeMap } from '/js/app/generateTextures.js'
+import {genCubeMap} from '/js/app/generateTextures.js'
+import {nanoid} from "/js/build/nanoid.js";
+
+
+let fileMap = new Map();
+const userId = sessionStorage.getItem("userId");
+const projectId = nanoid(17);
 
 const steps = [
     {
@@ -108,6 +114,7 @@ const ProjectInfoContent = () => {
 const UploadSceneContent = () => {
 
     let sceneName = null;
+
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -116,11 +123,18 @@ const UploadSceneContent = () => {
             reader.onerror = (error) => reject(error);
         });
 
-    const [isSceneInfoModalOpen, setIsSceneInfoModalOpen] = React.useState(false);
     const [form] = antd.Form.useForm();
+    const [isSceneInfoModalOpen, setIsSceneInfoModalOpen] = React.useState(false);
+    const [picKey, setPicKey] = React.useState(null);
+    const [uploadResolve, setUploadResolve] = React.useState(null);
+    const [uploadReject, setUploadReject] = React.useState(null);
 
-    const showSceneInfoModal = () => {
+
+    const showSceneInfoModal = (picKey) => {
         setIsSceneInfoModalOpen(true);
+        console.log(picKey, "showModal");
+        setPicKey(picKey);
+
     };
     const handleSceneInfoModalOk = () => {
 
@@ -128,8 +142,9 @@ const UploadSceneContent = () => {
         form.validateFields().then((values) => {
             form.resetFields();
             console.log(values);
-            sceneName=values.sceneName;
-            currentFile.name=sceneName;
+            sceneName = values.sceneName;
+            console.log(picKey, "handleOk");
+            fileMap.get(picKey).sceneName = sceneName;
         })
             .catch((info) => {
                 console.log('validate Failed:', info);
@@ -141,10 +156,11 @@ const UploadSceneContent = () => {
 
     };
 
+    const [actionUrl, setActionUrl] = React.useState('');
     const [previewOpen, setPreviewOpen] = React.useState(false);
     const [previewImage, setPreviewImage] = React.useState('');
     const [previewTitle, setPreviewTitle] = React.useState('');
-    const [currentFile,setCurrentFile] = React.useState(null);
+    const [currentFile, setCurrentFile] = React.useState(null);
     const [fileList, setFileList] = React.useState([
         // {
         //     uid: '-1',
@@ -190,7 +206,11 @@ const UploadSceneContent = () => {
         }
         setPreviewImage(file.url || file.preview);
         setPreviewOpen(true);
-        setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+        // setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+        console.log(file.uid, "hdPreview");
+        console.log(fileMap.get(file.uid), "hdPreview");
+        console.log(fileMap.size);
+        setPreviewTitle(fileMap.get(file.uid).sceneName || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
     const handleChange = ({fileList: newFileList}) => setFileList(newFileList);
 
@@ -212,17 +232,43 @@ const UploadSceneContent = () => {
         //     file.name=sceneName;
         //
         // })
-        console.log(file);
-        return new Promise(resolve=>{
+        const fileCopy = new File([file], file.name, {type: [file.type]});
+        const picId = nanoid(17);
+        setActionUrl("/uploadPic/" + userId + "/" + projectId + "/" + picId);
+        fileMap.set(file.uid, {
+            id: picId,
+            userId: userId,
+            projectId: projectId,
+            sceneName: '',
+            originalFile: fileCopy
+        })
+        console.log(fileMap.get(file.uid), "beforeUpload");
+        return new Promise((resolve, reject) => {
 
-
-            genCubeMap(file,resolve);
+            // showSceneInfoModal(resolve, reject);
+            showSceneInfoModal(file.uid);
+            genCubeMap(file, resolve);
 
         })
 
     }
     const handleAddSceneClick = () => {
 
+    }
+
+
+    const getOriginalFile = (file) => {
+        return new Promise((resolve, reject) => {
+
+            const reader = new FileReader();
+            reader.readAsDataURL(fileMap.get(file.uid).originalFile);
+            reader.onload = (e) => {
+                {
+                    resolve(e.target.result);
+                }
+            }
+
+        })
     }
 
     const UploadButton = (
@@ -241,7 +287,7 @@ const UploadSceneContent = () => {
     return (
         <div>
             <antd.Upload
-                action="/uploadPic"
+                action={actionUrl}
                 listType="picture-card"
                 fileList={fileList}
                 onPreview={handlePreview}
@@ -249,6 +295,8 @@ const UploadSceneContent = () => {
                 beforeUpload={handleBeforeUpload}
                 id={"sceneUpload"}
                 accept={"image/png, image/jpeg"}
+                data={nanoid(17)}
+                previewFile={getOriginalFile}
 
             >
                 {fileList.length >= 8 ? null : UploadButton}
@@ -391,7 +439,7 @@ const App = () => {
                     </antd.Button>
                 )}
                 {current === steps.length - 1 && (
-                    <antd.Button type="primary" onClick={() => antd.message.success('Processing complete!')}>
+                    <antd.Button type="primary" onClick={() => antd.message.success('项目创建完成!')}>
                         创建项目
                     </antd.Button>
                 )}

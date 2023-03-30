@@ -140,6 +140,9 @@
         }
     });
 </script>
+<script th:inline="javascript">
+    sessionStorage.setItem('userId',[[${session.user.getUserId()}]])
+</script>
 </body>
 </html>
 
