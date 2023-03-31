@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -51,11 +52,34 @@ public class FileSystemStorageService implements StorageService {
             }
 
 
-
             Files.copy(file.getInputStream(), rootLocation.resolve(storageName));
         } catch (IOException e) {
             throw new StorageException("Failed to store file" + file.getOriginalFilename(), e);
         }
+    }
+
+    @Override
+    public void store(String str, String prefix) {
+
+        try {
+
+            try {
+                if (!Files.exists(rootLocation.resolve(prefix))) {
+                    Files.createDirectories(rootLocation.resolve(prefix));
+                }
+
+            } catch (IOException e) {
+
+                throw new StorageException("Could not initialize storage", e);
+            }
+            String storageName = prefix + "projectConfig.json";
+            Files.copy(new ByteArrayInputStream(str.getBytes()), rootLocation.resolve(storageName));
+
+        } catch(IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+
     }
 
     @Override

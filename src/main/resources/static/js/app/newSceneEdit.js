@@ -1486,7 +1486,7 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
             // saveGeometricTransformation2Json("scale",[-4,4,4]);
             // showInfo(scene);
             recoverSceneFromJson(scene);
-            sceneConstructor(scene, './user_source/newTest/sceneConfig.json', renderer, camera);
+            sceneConstructor(scene, '/user_source/newTest/sceneConfig.json', renderer, camera);
         } else if (options.id === 15) {
             // 锁定物体
 

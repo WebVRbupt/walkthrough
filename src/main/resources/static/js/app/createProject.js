@@ -4,11 +4,15 @@
 
 import {genCubeMap} from '/js/app/generateTextures.js'
 import {nanoid} from "/js/build/nanoid.js";
-
+import {generateProjectConfig, addSkyboxTexture, addSkybox, addModel} from "/js/app/sceneExporter.js";
 
 let fileMap = new Map();
 const userId = sessionStorage.getItem("userId");
 const projectId = nanoid(17);
+const projectConfig = generateProjectConfig(projectId, userId);
+const modelId = nanoid(17);
+console.log(projectConfig);
+let isModelConfigCreate = false;
 
 const steps = [
     {
@@ -32,7 +36,10 @@ const steps = [
 
 const ProjectInfoContent = () => {
 
-    const onFinish = () => {
+    const onFinish = (values) => {
+
+        console.log(values);
+
 
     }
 
@@ -43,10 +50,10 @@ const ProjectInfoContent = () => {
         <antd.Form
             name="projectInfo"
             labelCol={{
-                span: 5,
+                span: 6,
             }}
             wrapperCol={{
-                span: 19,
+                span: 18,
             }}
             // style={{
             //     maxWidth: 600,
@@ -90,7 +97,7 @@ const ProjectInfoContent = () => {
                 label="项目类型"
                 rules={[
                     {
-                        required: true,
+                        required: false,
                     },
                 ]}
             >
@@ -113,8 +120,6 @@ const ProjectInfoContent = () => {
 
 const UploadSceneContent = () => {
 
-    let sceneName = null;
-
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -129,10 +134,8 @@ const UploadSceneContent = () => {
     const [uploadResolve, setUploadResolve] = React.useState(null);
     const [uploadReject, setUploadReject] = React.useState(null);
 
-
     const showSceneInfoModal = (picKey) => {
         setIsSceneInfoModalOpen(true);
-        console.log(picKey, "showModal");
         setPicKey(picKey);
 
     };
@@ -141,10 +144,11 @@ const UploadSceneContent = () => {
         setIsSceneInfoModalOpen(false);
         form.validateFields().then((values) => {
             form.resetFields();
-            console.log(values);
-            sceneName = values.sceneName;
-            console.log(picKey, "handleOk");
-            fileMap.get(picKey).sceneName = sceneName;
+            fileMap.get(picKey).sceneName = values.sceneName;
+            console.log(fileMap.get(picKey));
+            const {id, sceneName, fileType} = fileMap.get(picKey);
+            addSkyboxTexture(id, sceneName, fileType, projectConfig);
+            addSkybox(nanoid(17), id, sceneName, projectConfig);
         })
             .catch((info) => {
                 console.log('validate Failed:', info);
@@ -160,7 +164,6 @@ const UploadSceneContent = () => {
     const [previewOpen, setPreviewOpen] = React.useState(false);
     const [previewImage, setPreviewImage] = React.useState('');
     const [previewTitle, setPreviewTitle] = React.useState('');
-    const [currentFile, setCurrentFile] = React.useState(null);
     const [fileList, setFileList] = React.useState([
         // {
         //     uid: '-1',
@@ -240,7 +243,8 @@ const UploadSceneContent = () => {
             userId: userId,
             projectId: projectId,
             sceneName: '',
-            originalFile: fileCopy
+            originalFile: fileCopy,
+            fileType: file.name.substring(file.name.lastIndexOf('.'), file.name.length)
         })
         console.log(fileMap.get(file.uid), "beforeUpload");
         return new Promise((resolve, reject) => {
@@ -255,7 +259,6 @@ const UploadSceneContent = () => {
     const handleAddSceneClick = () => {
 
     }
-
 
     const getOriginalFile = (file) => {
         return new Promise((resolve, reject) => {
@@ -358,10 +361,21 @@ const UploadSceneContent = () => {
 
 const UploadModelContent = () => {
 
+    function handleModelUpload(file) {
+
+        const fileType = file.name.substring(file.name.lastIndexOf('.') + 1, file.name.length);
+        if (!isModelConfigCreate) {
+            addModel(modelId, "SpaceModel", projectConfig);
+            isModelConfigCreate = true;
+        }
+        return true;
+
+    }
+
 
     const props = {
         name: 'file',
-        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+        action: "/uploadModel/" + userId + "/" + projectId + "/" + modelId,
         headers: {
             authorization: 'authorization-text',
         },
@@ -370,16 +384,16 @@ const UploadModelContent = () => {
                 console.log(info.file, info.fileList);
             }
             if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
+                antd.message.success(`${info.file.name} file uploaded successfully`);
             } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
+                antd.message.error(`${info.file.name} file upload failed.`);
             }
         },
 
     };
 
     return (
-        <antd.Upload {...props} >
+        <antd.Upload {...props} beforeUpload={handleModelUpload}>
             <antd.Button>上传模型</antd.Button>
         </antd.Upload>
     );
@@ -405,6 +419,20 @@ const App = () => {
     const prev = () => {
         setCurrent(current - 1);
     };
+
+    const finishCreateProject = () => {
+
+        const configFile = JSON.stringify(projectConfig);
+        console.log(configFile);
+
+        axios.post("/" + "uploadConfigFile" + "/" + userId + "/" + projectId, projectConfig).then(
+            res => {
+                console.log(res);
+                antd.message.success('项目创建完成');
+            }
+        )
+
+    }
     const items = steps.map((item) => ({
         key: item.title,
         title: item.title,
@@ -439,7 +467,7 @@ const App = () => {
                     </antd.Button>
                 )}
                 {current === steps.length - 1 && (
-                    <antd.Button type="primary" onClick={() => antd.message.success('项目创建完成!')}>
+                    <antd.Button type="primary" onClick={finishCreateProject}>
                         创建项目
                     </antd.Button>
                 )}

@@ -15,4 +15,6 @@ public interface StorageService {
 
     void store(MultipartFile file,String prefix,String picId);
 
+    void store(String str,String prefix);
+
 }

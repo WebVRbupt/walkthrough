@@ -2,6 +2,7 @@
 *
 * This file contains methods for parsing and reconstructing scenes from configuration files in json format.
 * Thu,Mar9,2023.
+*
 */
 
 import * as THREE from '../build/three.module.js';
@@ -18,6 +19,7 @@ export function sceneConstructor(scene, jsonUrl) {
         .then((response) => response.json())
         .then((json) => {
             sceneConfig = json;
+            console.log(sceneConfig,"sceneConfig")
             parseSceneConfig(scene, sceneConfig);
         });
 

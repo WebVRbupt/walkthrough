@@ -17,11 +17,16 @@
 ### 三、前端相关
 
 #### 前端框架使用layui  https://www.layui.site/index.htm
+#### 创建项目页面引入了 `React`  https://react.dev/  和前端组件库 `Antd` https://ant.design/
 
 1. 用户登录后入口文件 project-manage.html
 2. u-project-table.html 是用户数据表格，包括删除/预览/...
-3. 前端页面不用起项目，直接用IDEA预览功能就行
-4. 测试数据 demo1.json
+3. u-create-project.html 创建项目功能页面
+4. stitch-panorama.html 全景图拼接功能页面
+5. newSceneEdit.htm 可视化编辑功能页面
+6. 前端页面不用起项目，直接用IDEA预览功能就行
+7. 测试数据 demo1.json
+8. 引入 `NanoID` 库 https://github.com/ai/nanoid 为全景漫游项目全景图和模型资源生成唯一标识id
 
 #### 主要页面
 登录
