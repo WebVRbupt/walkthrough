@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,8 +52,9 @@ public class FileSystemStorageService implements StorageService {
                 throw new StorageException("Could not initialize storage", e);
             }
 
-
-            Files.copy(file.getInputStream(), rootLocation.resolve(storageName));
+            InputStream fos = file.getInputStream();
+            Files.copy(fos, rootLocation.resolve(storageName));
+            fos.close();
         } catch (IOException e) {
             throw new StorageException("Failed to store file" + file.getOriginalFilename(), e);
         }
