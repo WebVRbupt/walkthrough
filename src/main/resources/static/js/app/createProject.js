@@ -11,7 +11,6 @@ const userId = sessionStorage.getItem("userId");
 const projectId = nanoid(17);
 const projectConfig = generateProjectConfig(projectId, userId);
 const modelId = nanoid(17);
-console.log(projectConfig);
 let isModelConfigCreate = false;
 
 const steps = [
@@ -34,30 +33,42 @@ const steps = [
 ];
 
 
-const ProjectInfoContent = () => {
+const ProjectInfoContent = (props) => {
+
+    const [form] = antd.Form.useForm();
 
     const onFinish = (values) => {
 
         console.log(values);
-
-
+        projectConfig.metadata.name = values.projectName;
+        projectConfig.metadata.description = values.projectDescription === undefined?'':values.projectDescription;
+        projectConfig.metadata.type = values.projectType;
     }
 
     const onFinishFailed = () => {
 
+        antd.message.error("请输入场景相关信息!")
+
     }
+
     return (
         <antd.Form
+
+            ref={props.formRef}
+            form={form}
             name="projectInfo"
             labelCol={{
-                span: 6,
+                span: 7,
             }}
             wrapperCol={{
-                span: 18,
+                span: 17,
             }}
             // style={{
             //     maxWidth: 600,
             // }}
+
+            size='large'
+
 
             initialValues={{
                 remember: true,
@@ -68,11 +79,11 @@ const ProjectInfoContent = () => {
         >
             <antd.Form.Item
                 label="项目名称"
-                name="projectname"
+                name="projectName"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input your projectname!',
+                        message: 'Please input your project name!',
                     },
                 ]}
             >
@@ -81,15 +92,14 @@ const ProjectInfoContent = () => {
 
             <antd.Form.Item
                 label="项目描述"
-                name="password"
+                name="projectDescription"
                 rules={[
                     {
                         required: false,
-                        message: 'Please input your password!',
                     },
                 ]}
             >
-                <antd.Input.TextArea rows={5} placeholder="描述项目的相关信息..."/>
+                <antd.Input.TextArea rows={5} placeholder="描述项目的相关信息..." value={""}/>
             </antd.Form.Item>
 
             <antd.Form.Item
@@ -97,14 +107,13 @@ const ProjectInfoContent = () => {
                 label="项目类型"
                 rules={[
                     {
-                        required: false,
+                        required: true,
+                        message: 'Please chooses your project type!',
                     },
                 ]}
             >
                 <antd.Select
-                    placeholder="Select a option and change input text above"
-
-                    allowClear
+                    placeholder="选择项目类型"
                 >
                     <antd.Select.Option value="room">房间</antd.Select.Option>
                     <antd.Select.Option value="exhibition">展厅</antd.Select.Option>
@@ -402,7 +411,7 @@ const UploadModelContent = () => {
 
 const CreateProjectStep = (props) => {
     if (props.current === 0) {
-        return (<ProjectInfoContent/>)
+        return (<ProjectInfoContent formRef={props.formRef}/>)
     } else if (props.current === 1) {
         return (<UploadSceneContent/>)
     } else if (props.current === 2) {
@@ -411,14 +420,33 @@ const CreateProjectStep = (props) => {
         return ("完成创建")
 }
 const App = () => {
+
+    const formRef = React.useRef(null);
+
+    const form = antd.Form.useFormInstance();
     const {token} = antd.theme.useToken();
     const [current, setCurrent] = React.useState(0);
     const next = () => {
-        setCurrent(current + 1);
+
+        if (current === 0) {
+            formRef.current.validateFields().then(sceneInfoResolve, sceneInfoReject);
+        } else {
+            setCurrent(current + 1);
+        }
     };
     const prev = () => {
         setCurrent(current - 1);
     };
+
+    const sceneInfoResolve = () => {
+
+        formRef.current.submit();
+        setCurrent(current + 1);
+    }
+
+    const sceneInfoReject = () => {
+        antd.message.error("请输入场景信息！");
+    }
 
     const finishCreateProject = () => {
 
@@ -454,7 +482,7 @@ const App = () => {
         <div>
             <antd.Steps current={current} items={items}/>
             <div style={contentStyle} id='mainContainer'>
-                {<CreateProjectStep current={current}/>}
+                {<CreateProjectStep current={current} formRef={formRef}/>}
             </div>
             <div
                 style={{
@@ -475,6 +503,7 @@ const App = () => {
                     <antd.Button
                         style={{
                             margin: '0 8px',
+                            display: 'none'
                         }}
                         onClick={() => prev()}
                     >
