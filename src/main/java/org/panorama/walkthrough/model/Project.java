@@ -45,6 +45,11 @@ public class Project {
     @Setter
     String profile;
 
+    // 项目对应的本地配置文件的id
+    @Getter
+    @Setter
+    String configFileId;
+
     public Project(String projectName, String projectPath, Long userId, Integer status) {
         this.projectName = projectName;
         this.projectPath = projectPath;
@@ -65,6 +70,7 @@ public class Project {
                 ", projectName='" + projectName + '\'' +
                 ", projectPath='" + projectPath + '\'' +
                 ", userId=" + userId +
+                ", configFileId" + configFileId +
                 ", creationTime=" + creationTime +
                 ", status=" + status +
                 '}';

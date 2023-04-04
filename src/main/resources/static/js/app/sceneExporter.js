@@ -13,9 +13,9 @@ export function generateProjectConfig(projectId, userId) {
 
             id: projectId,       //前端生成的项目id
             projectId: -1,       //项目的数据库id
-            userId: userId,
+            userId: parseInt(userId),
             type: "",
-            name:"",
+            name: "",
             description: "",
             createDate: now.toString(),
             path: "/" + userId + "/" + projectId + "/",
