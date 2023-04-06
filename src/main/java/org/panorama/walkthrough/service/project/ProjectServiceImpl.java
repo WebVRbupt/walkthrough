@@ -26,10 +26,12 @@ import java.util.List;
  */
 @Slf4j
 @Service("ProjectService")
-public class ProjectServiceImpl implements ProjectService {
-    ProjectRepository projectRepository;
+public final class ProjectServiceImpl implements ProjectService {
+    private ProjectRepository projectRepository;
     @Value("${customer.work-dir}")
-    String PROJECTS_PATH;
+    private String PROJECTS_PATH;
+    @Value("#{systemProperties['file.separator']}")
+    private String FILE_SEPARATOR;
 
     @Autowired
     public ProjectServiceImpl(ProjectRepository projectRepository) {
@@ -130,7 +132,7 @@ public class ProjectServiceImpl implements ProjectService {
         try {
             project = projectRepository.save(project);
             Long projectId = project.getProjectId();
-            Path projectWorkDir = Paths.get(PROJECTS_PATH + "/tmp/" + projectId);
+            Path projectWorkDir = Paths.get(PROJECTS_PATH + FILE_SEPARATOR + "tmp" + FILE_SEPARATOR + projectId);
             projectWorkDir = Files.createDirectories(projectWorkDir);
             session.setAttribute("new_project_path", projectWorkDir);
         } catch (Exception ex) {

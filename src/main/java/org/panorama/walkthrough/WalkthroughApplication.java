@@ -10,8 +10,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class WalkthroughApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(WalkthroughApplication.class, args);
 	}
-
 }

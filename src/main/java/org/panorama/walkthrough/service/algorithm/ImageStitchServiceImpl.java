@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  */
 @Service("imageStitchService")
 @Slf4j
-public class ImageStitchServiceImpl extends ImgStitchService {
+public final class ImageStitchServiceImpl extends ImgStitchService {
 
     @Value("${customer.stitchImagePyFile}")
     private String PYTHON_MAIN_FILE;
