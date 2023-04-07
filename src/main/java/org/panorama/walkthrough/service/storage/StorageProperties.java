@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties("storage")
 public class StorageProperties implements BeanPostProcessor {
 
-    @Value("${customer.work-dir}")
+    @Value("#{'${customer.work-dir}' ?: systemProperties['user.dir']}")
     private String WORK_DIR;
     @Value("#{systemProperties['file.separator']}")
     private String SEPARATOR;

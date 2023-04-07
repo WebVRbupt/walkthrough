@@ -35,7 +35,7 @@ import java.nio.file.Paths;
 @Controller
 public class StitchController {
 
-    @Value("${customer.work-dir}")
+    @Value("#{'${customer.work-dir}' ?: systemProperties['user.dir']}")
     private String WORK_DIR;
     private static final String CONFIG_FILE = "image_list.txt";
     private ImgStitchService imgStitchService;

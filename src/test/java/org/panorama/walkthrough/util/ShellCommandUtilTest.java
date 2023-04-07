@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @Slf4j
 class ShellCommandUtilTest {
-    @Value("${customer.work-dir}")
+    @Value("#{'${customer.work-dir}' ?: systemProperties['user.dir']}")
     private String WORK_DIR;
     private static final String PY_PATH = "imageStitchPy/src/main.py";
     private static final String IMGS_DIR = "tmp/1/stitch";

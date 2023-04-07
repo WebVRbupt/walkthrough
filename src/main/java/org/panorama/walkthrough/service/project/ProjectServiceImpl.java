@@ -28,7 +28,7 @@ import java.util.List;
 @Service("ProjectService")
 public final class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository;
-    @Value("${customer.work-dir}")
+    @Value("#{'${customer.work-dir}' ?: systemProperties['user.dir']}")
     private String PROJECTS_PATH;
     @Value("#{systemProperties['file.separator']}")
     private String FILE_SEPARATOR;

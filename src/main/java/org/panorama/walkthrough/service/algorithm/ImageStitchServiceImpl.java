@@ -36,7 +36,7 @@ public final class ImageStitchServiceImpl extends ImgStitchService {
         String[] command = new String[]{"python", PYTHON_MAIN_FILE, images_dir, images_dir};
         int exitCode = 0;
         try {
-            exitCode = ShellCommandUtil.runCommand(command, "/").intValue();
+            exitCode = ShellCommandUtil.runCommand(command).intValue();
         } catch (Exception ex) {
             return false;
         } finally {

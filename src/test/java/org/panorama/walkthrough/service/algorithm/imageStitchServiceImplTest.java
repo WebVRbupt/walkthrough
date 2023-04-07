@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @SpringBootTest
 @Slf4j
 class imageStitchServiceImplTest {
-    @Value("${customer.work-dir}")
+    @Value("#{'${customer.work-dir}' ?: systemProperties['user.dir']}")
     String work_dir_prefix;
     String work_dir;
     @Autowired
