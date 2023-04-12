@@ -115,6 +115,16 @@ public final class ProjectServiceImpl implements ProjectService {
     }
 
     /**
+     * @title getProjectInfo
+     * @description 获取用户信息
+     */
+    public Project getProjectInfo(Long projectId){
+
+        return projectRepository.findByProjectId(projectId);
+
+    }
+
+    /**
      * @title initProject
      * @description 1.数据库存储project 2.session保存项目路径
      */

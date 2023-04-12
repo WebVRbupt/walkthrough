@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>table</title>
     <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/js/lib/axios.min.js"></script>
 </head>
 <body>
 
@@ -58,6 +59,8 @@
         var barFunction = {
             barDetail: function (projectId) {
                 layer.msg('预览: ' + projectId);
+                var location = '/project/tour?projectId=' + projectId;
+                window.location = location;
             },
             barRename: function (projectId) {
                 layer.prompt({title: '项目名称', formType: 2}, function (projectName, index) {
@@ -79,7 +82,7 @@
                             success: function (resp) {
                                 window.location.reload();
                             },
-                            error: function (){
+                            error: function () {
                                 layer.msg('修改项目信息失败');
                             }
                         });
@@ -94,7 +97,17 @@
                 layer.msg('分享链接已经复制到粘贴板' + projectId);
             },
             barDelete: function (projectId) {
-                layer.msg('项目删除成功，请刷新页面' + projectId);
+                axios.get('/project/delete', {
+                    params: {
+                        projectId: projectId
+                    }
+                }).then(function (response) {
+                    if (response.data.code === 0) {
+                        layer.msg('项目:' + projectId + ' 删除成功，请刷新页面');
+                    } else if (response.data.code === 1) {
+                        layer.msg('项目:' + projectId + ' 删除失败');
+                    }
+                })
             }
         }
     });

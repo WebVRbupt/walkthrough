@@ -70,7 +70,7 @@ public class Project {
                 ", projectName='" + projectName + '\'' +
                 ", projectPath='" + projectPath + '\'' +
                 ", userId=" + userId +
-                ", configFileId" + configFileId +
+                ", configFileId=" + configFileId +
                 ", creationTime=" + creationTime +
                 ", status=" + status +
                 '}';

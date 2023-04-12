@@ -6,11 +6,13 @@ import {genCubeMap} from '/js/app/generateTextures.js'
 import {nanoid} from "/js/build/nanoid.js";
 import {generateProjectConfig, addSkyboxTexture, addSkybox, addModel} from "/js/app/sceneExporter.js";
 
+
+const genIdLength = 17;
 let fileMap = new Map();
 const userId = sessionStorage.getItem("userId");
-const projectId = nanoid(17);
+const projectId = nanoid(genIdLength);
 const projectConfig = generateProjectConfig(projectId, userId);
-const modelId = nanoid(17);
+const modelId = nanoid(genIdLength);
 let isModelConfigCreate = false;
 
 const steps = [
@@ -32,7 +34,7 @@ const steps = [
     },
 ];
 
-
+// Step1.填写项目信息组件.
 const ProjectInfoContent = (props) => {
 
     const [form] = antd.Form.useForm();
@@ -41,13 +43,13 @@ const ProjectInfoContent = (props) => {
 
         console.log(values);
         projectConfig.metadata.name = values.projectName;
-        projectConfig.metadata.description = values.projectDescription === undefined?'':values.projectDescription;
+        projectConfig.metadata.description = values.projectDescription === undefined ? '' : values.projectDescription;
         projectConfig.metadata.type = values.projectType;
     }
 
     const onFinishFailed = () => {
 
-        antd.message.error("请输入场景相关信息!")
+        antd.message.error("请完善必要的项目信息!")
 
     }
 
@@ -127,6 +129,7 @@ const ProjectInfoContent = (props) => {
     )
 }
 
+// Step2. 上传场景全景图像组件.
 const UploadSceneContent = () => {
 
     const getBase64 = (file) =>
@@ -142,14 +145,17 @@ const UploadSceneContent = () => {
     const [picKey, setPicKey] = React.useState(null);
     const [uploadResolve, setUploadResolve] = React.useState(null);
     const [uploadReject, setUploadReject] = React.useState(null);
+    const [sceneInfoResolve, setSceneInfoResolve] = React.useState(null);
+    const [sceneInfoReject, setSceneInfoReject] = React.useState(null);
+    const [isConfirm, setIsConfirm] = React.useState(false);
 
     const showSceneInfoModal = (picKey) => {
         setIsSceneInfoModalOpen(true);
         setPicKey(picKey);
-
     };
     const handleSceneInfoModalOk = () => {
 
+        setIsConfirm(true);
         setIsSceneInfoModalOpen(false);
         form.validateFields().then((values) => {
             form.resetFields();
@@ -157,16 +163,17 @@ const UploadSceneContent = () => {
             console.log(fileMap.get(picKey));
             const {id, sceneName, fileType} = fileMap.get(picKey);
             addSkyboxTexture(id, sceneName, fileType, projectConfig);
-            addSkybox(nanoid(17), id, sceneName, projectConfig);
+            addSkybox(nanoid(genIdLength), id, sceneName, projectConfig);
         })
             .catch((info) => {
                 console.log('validate Failed:', info);
             })
 
     };
-    const handleSceneInfoModalCancel = () => {
-        setIsSceneInfoModalOpen(false);
 
+    const handleSceneInfoModalCancel = () => {
+        setIsConfirm(false);
+        setIsSceneInfoModalOpen(false);
     };
 
     const [actionUrl, setActionUrl] = React.useState('');
@@ -244,8 +251,10 @@ const UploadSceneContent = () => {
         //     file.name=sceneName;
         //
         // })
+
+        console.log(file, "fileInfo");
         const fileCopy = new File([file], file.name, {type: [file.type]});
-        const picId = nanoid(17);
+        const picId = nanoid(genIdLength);
         setActionUrl("/uploadPic/" + userId + "/" + projectId + "/" + picId);
         fileMap.set(file.uid, {
             id: picId,
@@ -256,14 +265,59 @@ const UploadSceneContent = () => {
             fileType: file.name.substring(file.name.lastIndexOf('.'), file.name.length)
         })
         console.log(fileMap.get(file.uid), "beforeUpload");
-        return new Promise((resolve, reject) => {
 
-            // showSceneInfoModal(resolve, reject);
+        return new Promise((resolve, reject) => {
             showSceneInfoModal(file.uid);
             genCubeMap(file, resolve);
 
         })
+    }
 
+    const reHandleBeforeUpload = (file) => {
+
+        let checkImage = new Promise((resolve, reject) => {
+            let reader = new FileReader();
+
+            reader.onload = () => {
+                const image = new Image();
+                image.src = reader.result;
+                image.onload = () => {
+                    if (image.width !== 2 * image.height) {
+
+                        antd.message.error("上传的场景全景图形必须为宽是高二倍的等距柱状投影全景图！");
+                        reject();
+                        return antd.Upload.LIST_IGNORE;
+                    } else {
+                        resolve(file);
+                    }
+
+                }
+            }
+            reader.readAsDataURL(file);
+        });
+
+        return checkImage.then(() => {
+
+            const fileCopy = new File([file], file.name, {type: [file.type]});
+            const picId = nanoid(genIdLength);
+            setActionUrl("/uploadPic/" + userId + "/" + projectId + "/" + picId);
+            fileMap.set(file.uid, {
+                id: picId,
+                userId: userId,
+                projectId: projectId,
+                sceneName: '',
+                originalFile: fileCopy,
+                fileType: file.name.substring(file.name.lastIndexOf('.'), file.name.length)
+            })
+            console.log(fileMap.get(file.uid), "beforeUpload");
+
+            showSceneInfoModal(file.uid);
+
+        }, () => {
+            console.log("reject 执行惹！！！")
+        }).then((resolve) => {
+            genCubeMap(file, resolve)
+        })
     }
     const handleAddSceneClick = () => {
 
@@ -314,7 +368,7 @@ const UploadSceneContent = () => {
                 {fileList.length >= 8 ? null : UploadButton}
             </antd.Upload>
             <antd.Modal title="场景信息" open={isSceneInfoModalOpen} onOk={handleSceneInfoModalOk}
-                        onCancel={handleSceneInfoModalCancel}>
+                        onCancel={handleSceneInfoModalCancel} isConfirm={isConfirm}>
                 <antd.Form
                     form={form}
                     name="sceneInfo"
@@ -368,6 +422,7 @@ const UploadSceneContent = () => {
 
 }
 
+// Step3. 上传空间模型组件.
 const UploadModelContent = () => {
 
     function handleModelUpload(file) {
@@ -409,6 +464,7 @@ const UploadModelContent = () => {
 
 }
 
+// Contents of Step Component.
 const CreateProjectStep = (props) => {
     if (props.current === 0) {
         return (<ProjectInfoContent formRef={props.formRef}/>)
@@ -419,6 +475,8 @@ const CreateProjectStep = (props) => {
     } else
         return ("完成创建")
 }
+
+
 const App = () => {
 
     const formRef = React.useRef(null);
@@ -445,7 +503,7 @@ const App = () => {
     }
 
     const sceneInfoReject = () => {
-        antd.message.error("请输入场景信息！");
+        antd.message.error("请完善必要的场景信息！");
     }
 
     const finishCreateProject = () => {

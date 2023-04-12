@@ -1,6 +1,9 @@
 package org.panorama.walkthrough.service.storage;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.panorama.walkthrough.controller.UploadResourcesController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +27,8 @@ import java.nio.file.Paths;
 @Service
 public class FileSystemStorageService implements StorageService {
 
+    private static final Logger log = LoggerFactory.getLogger(FileSystemStorageService.class);
+
     private final Path rootLocation;
 
     @Autowired
@@ -32,6 +37,7 @@ public class FileSystemStorageService implements StorageService {
         init();
     }
 
+    // 将前端提交的全景图像或模型文件存储到服务端.
     @Override
     public void store(MultipartFile file, String prefix, String picId) {
         String fileName = file.getOriginalFilename();
@@ -55,11 +61,15 @@ public class FileSystemStorageService implements StorageService {
             InputStream fos = file.getInputStream();
             Files.copy(fos, rootLocation.resolve(storageName));
             fos.close();
+            log.info("Resources Save Success:"+storageName);
+
         } catch (IOException e) {
+            log.error("Resources Save Failed:"+file.getOriginalFilename()+" "+e.getMessage());
             throw new StorageException("Failed to store file" + file.getOriginalFilename(), e);
         }
     }
 
+    // 将前端提交的项目配置json字符串流存储为json格式文件.
     @Override
     public void store(String str, String prefix) {
 
@@ -71,17 +81,17 @@ public class FileSystemStorageService implements StorageService {
                 }
 
             } catch (IOException e) {
-
+                log.error("Resources Save Failed:"+prefix+" configuration file "+e.getMessage());
                 throw new StorageException("Could not initialize storage", e);
             }
             String storageName = prefix + "projectConfig.json";
             Files.copy(new ByteArrayInputStream(str.getBytes()), rootLocation.resolve(storageName));
+            log.info("Resources Save Success:"+storageName);
 
         } catch(IOException e) {
+            log.error("Resources Save Failed:"+prefix+" configuration file "+e.getMessage());
             System.out.println(e.getMessage());
         }
-
-
     }
 
     @Override
@@ -93,7 +103,7 @@ public class FileSystemStorageService implements StorageService {
             }
 
         } catch (IOException e) {
-
+            log.error("Resources Save Failed:"+"FileSystemStorageService init Failed "+e.getMessage());
             throw new StorageException("Could not initialize storage", e);
         }
 

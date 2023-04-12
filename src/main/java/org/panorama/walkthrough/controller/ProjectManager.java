@@ -1,9 +1,6 @@
 package org.panorama.walkthrough.controller;
 
-import org.panorama.walkthrough.model.ProjectIntro;
-import org.panorama.walkthrough.model.ResponseEntity;
-import org.panorama.walkthrough.model.ResponseEnum;
-import org.panorama.walkthrough.model.User;
+import org.panorama.walkthrough.model.*;
 import org.panorama.walkthrough.repositories.ProjectInfo;
 import org.panorama.walkthrough.service.project.ProjectService;
 import org.panorama.walkthrough.util.ResponseUtil;
@@ -32,7 +29,7 @@ public class ProjectManager {
     @ResponseBody
     public ResponseEntity getUserProjects(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        User user= (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         List<ProjectInfo> res = projectService.getProjectIntroList(user.getUserId());
         if (null == res) {
             return ResponseUtil.error(ResponseEnum.ERROR_404);
@@ -70,8 +67,22 @@ public class ProjectManager {
             return ResponseUtil.error(ResponseEnum.FAIL);
         }
     }
+
     @GetMapping("edit")
-    public String edit(@RequestParam("projectId")Long projectId){
-       return "newSceneEdit";
+    public String edit(@RequestParam("projectId") Long projectId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Project info = projectService.getProjectInfo(projectId);
+        session.setAttribute("configurationFileId", info.getConfigFileId());
+        System.out.println("edit:"+projectId+"-"+info.getConfigFileId());
+        return "u-project-edit";
+    }
+
+    @GetMapping("tour")
+    public String tour(@RequestParam("projectId") Long projectId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Project info = projectService.getProjectInfo(projectId);
+        session.setAttribute("configurationFileId", info.getConfigFileId());
+        System.out.println("tour:"+projectId+"-"+info.getConfigFileId());
+        return "u-project-tour";
     }
 }

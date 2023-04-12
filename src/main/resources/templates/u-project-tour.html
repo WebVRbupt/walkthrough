@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>全景行走漫游</title>
+    <script src="/js/app/sceneTour.js" type="module"></script>
+</head>
+<body>
+<div class="sceneContainer" id="sceneContainer"></div>
+<script th:inline="javascript">
+    sessionStorage.setItem('configurationFileId',[[${session.configurationFileId}]])
+</script>
+</body>
+</html>

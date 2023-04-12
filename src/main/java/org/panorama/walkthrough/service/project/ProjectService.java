@@ -20,4 +20,5 @@ public interface ProjectService {
     Boolean deleteProject(Long projectId);
     Boolean updateProject(Project project);
     Boolean addProject(ProjectIntro projectIntro, HttpServletRequest httpRequest);
+    Project getProjectInfo(Long projectId);
 }

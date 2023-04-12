@@ -7,6 +7,8 @@ import org.panorama.walkthrough.model.Project;
 import org.panorama.walkthrough.repositories.ProjectRepository;
 import org.panorama.walkthrough.service.project.ProjectService;
 import org.panorama.walkthrough.service.storage.StorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +30,8 @@ import java.util.Map;
 @RestController
 public class UploadResourcesController {
 
+    private static final Logger log = LoggerFactory.getLogger(UploadResourcesController.class);
+
     @Autowired
     ProjectService projectService;
 
@@ -44,8 +48,7 @@ public class UploadResourcesController {
     @PostMapping("/uploadPic/{userId}/{projectId}/{picId}")
     String uploadPic(@RequestParam("file") MultipartFile file, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId, @PathVariable("picId") String picId) {
         String fileName = file.getOriginalFilename();
-        System.out.println(fileName);
-        System.out.println("upload pic");
+        log.info("Resources Upload:[Type-Picture] " + fileName);
         JSONObject statusInfo = new JSONObject();
         statusInfo.put("code", 0);
         statusInfo.put("msg", "upload success");
@@ -59,8 +62,7 @@ public class UploadResourcesController {
     String uploadModel(@RequestParam("file") MultipartFile file, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId, @PathVariable("modelId") String modelId) {
 
         String fileName = file.getOriginalFilename();
-        System.out.println(fileName);
-        System.out.println("upload model");
+        log.info("Resources Upload:[Type-Space Model] " + fileName);
         JSONObject statusInfo = new JSONObject();
         statusInfo.put("code", 0);
         statusInfo.put("msg", "upload success");
@@ -74,7 +76,8 @@ public class UploadResourcesController {
     // 生成配置文件，h2数据库项目表插入新项目并保存相关信息
     @PostMapping("/uploadConfigFile/{userId}/{projectId}")
     String uploadConfigFile(@RequestBody String configFile, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId) {
-        System.out.println(configFile);
+
+        log.info("Resources Upload:[Type-Project Configuration File] ID:" + projectId );
         JSONObject projectConfig = JSON.parseObject(configFile);
         JSONObject metaInfo = projectConfig.getJSONObject("metadata");
 

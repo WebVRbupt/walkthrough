@@ -21,7 +21,7 @@ public class StorageProperties implements BeanPostProcessor {
     private String WORK_DIR;
     @Value("#{systemProperties['file.separator']}")
     private String SEPARATOR;
-    private final String STORE_DIR = "userData";
+    private final String STORE_DIR = "userData/projectResources";
     private String location;
 
     public String getLocation() {

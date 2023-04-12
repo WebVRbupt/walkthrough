@@ -21,9 +21,12 @@ import {sceneConstructor} from "./sceneConstructor.js"
 
 let container = document.getElementById("sceneContainer");
 
+const configurationFileId = sessionStorage.getItem("configurationFileId");
+const userId = sessionStorage.getItem("userId");
+const projectConfigurationUrl = "/"+userId+"/"+configurationFileId+"/"+"projectConfig.json";
+
 let camera, scene, renderer;
 let scene2;
-
 
 let mouseX = 0, mouseY = 0;
 
@@ -1489,7 +1492,6 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
             sceneConstructor(scene, '/user_source/newTest/sceneConfig.json', renderer, camera);
         } else if (options.id === 15) {
             // 锁定物体
-
             lockObject();
 
         }

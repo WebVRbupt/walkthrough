@@ -11,7 +11,7 @@ import {MTLLoader} from "../lib/loaders/MTLLoader.js";
 import {OBJLoader} from "../lib/loaders/OBJLoader.js";
 
 // Entry Method of reconstruct scene.
-export function sceneConstructor(scene, jsonUrl) {
+export function sceneConstructor(scene, entityGroup, jsonUrl) {
 
     let sceneConfig;
     // let scene = new THREE.Scene();
@@ -19,8 +19,8 @@ export function sceneConstructor(scene, jsonUrl) {
         .then((response) => response.json())
         .then((json) => {
             sceneConfig = json;
-            console.log(sceneConfig,"sceneConfig")
-            parseSceneConfig(scene, sceneConfig);
+            console.log(sceneConfig, "sceneConfig")
+            parseSceneConfig(scene, entityGroup, sceneConfig);
         });
 
 }
@@ -39,7 +39,7 @@ export function sceneConstructor(scene, jsonUrl) {
 // }
 
 // parsing configuration file and recover scene.
-function parseSceneConfig(scene, sceneConfig) {
+function parseSceneConfig(scene, entityGroup, sceneConfig) {
 
     const texturesConfigArr = sceneConfig["textures"];
     const skyboxConfigArr = sceneConfig["scene"]["skybox"];
@@ -48,10 +48,11 @@ function parseSceneConfig(scene, sceneConfig) {
 
     const texturesMap = generateTexturesMap(texturesConfigArr);
 
-    generateEditHelper(scene);
-    constructSkybox(scene, skyboxConfigArr, texturesMap);
-    constructNaviCircle(scene, naviConfigArr, texturesMap);
-    constructModel(scene, modelConfigArr, texturesMap);
+    //generateEditHelper(scene);
+    constructSkybox(scene, entityGroup, skyboxConfigArr, texturesMap);
+    constructNaviCircle(scene, entityGroup, naviConfigArr, texturesMap);
+    constructModel(entityGroup, modelConfigArr, texturesMap);
+    scene.add(entityGroup);
 
 }
 
@@ -60,9 +61,9 @@ function generateTexturesMap(texturesConfigArr) {
     let texturesMap = new Map;
     for (const textureConfig of texturesConfigArr) {
         if (textureConfig.type === "skybox") {
-            texturesMap.set(textureConfig.name, getTexturesFromAtlasFile(textureConfig.url, 6));
+            texturesMap.set(textureConfig.id, getTexturesFromAtlasFile(textureConfig.url, 6));
         } else if (textureConfig.type === "navi") {
-            texturesMap.set(textureConfig.name, new THREE.TextureLoader().load(textureConfig.url));
+            texturesMap.set(textureConfig.id, new THREE.TextureLoader().load(textureConfig.url));
         }
 
     }
@@ -71,7 +72,7 @@ function generateTexturesMap(texturesConfigArr) {
 
 }
 
-function constructSkybox(scene, skyboxConfigArr, texturesMap) {
+function constructSkybox(scene, entityGroup, skyboxConfigArr, texturesMap) {
 
     console.log(skyboxConfigArr);
     const panoGroup = new THREE.Group();
@@ -80,31 +81,35 @@ function constructSkybox(scene, skyboxConfigArr, texturesMap) {
 
         const materials = [];
         const textures_1 = texturesMap.get(skyboxConfig['texture'][0]);
-        const textures_2 = texturesMap.get(skyboxConfig['texture'][1]);
-        for (let i = 0; i < 6; i++) {
-            materials.push(new THREE.ShaderMaterial({
-                uniforms: {
-                    texture1: {
-                        value: textures_1[i]
-                    },
-                    //用于渐变的纹理
-                    texture2: {
-                        value: textures_2[i]
-                    },
-                    Uprogress: {
-                        value: 0
-                    },
-                    alpha: {
-                        value: 1
-                    }
-                },
-                // 顶点着色器
-                vertexShader: document.getElementById('vertexShader').textContent,
-                // 片元着色器
-                fragmentShader: document.getElementById('fragmentShader').textContent,
-                transparent: true,
-                depthTest: false
-            }))
+        // const textures_2 = texturesMap.get(skyboxConfig['texture'][1]);
+        // for (let i = 0; i < 6; i++) {
+        //     materials.push(new THREE.ShaderMaterial({
+        //         uniforms: {
+        //             texture1: {
+        //                 value: textures_1[i]
+        //             },
+        //             //用于渐变的纹理
+        //             texture2: {
+        //                 value: textures_2[i]
+        //             },
+        //             Uprogress: {
+        //                 value: 0
+        //             },
+        //             alpha: {
+        //                 value: 1
+        //             }
+        //         },
+        //         // 顶点着色器
+        //         vertexShader: document.getElementById('vertexShader').textContent,
+        //         // 片元着色器
+        //         fragmentShader: document.getElementById('fragmentShader').textContent,
+        //         transparent: true,
+        //         depthTest: false
+        //     }))
+        // }
+
+        for (let i = 0; i < 6; ++i) {
+            materials.push(new THREE.MeshBasicMaterial({map: textures_1[i]}));
         }
 
         const skyBox = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), materials);
@@ -118,15 +123,16 @@ function constructSkybox(scene, skyboxConfigArr, texturesMap) {
 
         skyBox.position.copy(new THREE.Vector3(skyboxConfig["position"].x, skyboxConfig["position"].y, skyboxConfig["position"].z));
         skyBox.name = skyboxConfig["name"];
+        skyBox.customId = skyboxConfig["id"];
 
         panoGroup.add(skyBox);
 
     }
-    scene.add(panoGroup);
+    entityGroup.add(panoGroup);
 
 }
 
-function constructNaviCircle(scene, naviConfigArr, texturesMap) {
+function constructNaviCircle(scene, entityGroup, naviConfigArr, texturesMap) {
 
     console.log(naviConfigArr);
     const naviGroup = new THREE.Group();
@@ -152,17 +158,17 @@ function constructNaviCircle(scene, naviConfigArr, texturesMap) {
         mesh_circle.name = naviConfig["name"];
         mesh_circle.renderOrder = 11;
 
-        scene.add(mesh_circle);
+        entityGroup.add(mesh_circle);
     }
 
 }
 
-function constructModel(scene, modelConfigArr) {
+function constructModel(parentObject, modelConfigArr) {
     const manager = new THREE.LoadingManager();
     manager.addHandler(/\.dds$/i, new DDSLoader());
     for (const modelConfig of modelConfigArr) {
 
-        loadModel(scene, manager, modelConfig);
+        loadModel(parentObject, manager, modelConfig);
 
     }
 }
@@ -171,8 +177,8 @@ function generateNaviMap(scene, naviConfigArr) {
 
     let naviMap = new Map;
     let skyboxMap = getSkyboxMapFromScene(scene);
-    for(const naviConfig of naviConfigArr){
-        naviMap.set(naviConfig["name"],skyboxMap.get(naviConfig["map"]));
+    for (const naviConfig of naviConfigArr) {
+        naviMap.set(naviConfig["name"], skyboxMap.get(naviConfig["map"]));
     }
     return naviMap;
 
@@ -191,30 +197,33 @@ function getSkyboxMapFromScene(scene) {
     return skyboxMap;
 }
 
-function loadModel(scene, manager, modelConfig) {
+function loadModel(parentObject, manager, modelConfig) {
 
     let model, obj;
 
     new MTLLoader(manager)
-        .setPath(modelConfig["path"])
-        .load(modelConfig["mtl"], function (materials) {
+        .setPath(modelConfig["url"])
+        .load(modelConfig["id"] + '.mtl', function (materials) {
 
             materials.preload();
 
             new OBJLoader(manager)
                 .setMaterials(materials)
-                .setPath(modelConfig["path"])
-                .load(modelConfig["obj"], function (object) {
+                .setPath(modelConfig["url"])
+                .load(modelConfig["id"] + '.obj', function (object) {
                     model = object;
                     obj = model;
-                    obj.name = modelConfig["name"];
+                    // obj.name = modelConfig["name"];
+                    obj.name = "mtlModel";
 
                     obj.rotateX(modelConfig["rotation"].x);
                     obj.rotateY(modelConfig["rotation"].y);
                     obj.rotateZ(modelConfig["rotation"].z);
 
                     console.log(object.position);
-                    scene.add(object);
+                    obj.children[0].name=modelConfig["name"];
+                    obj.children[0].customId=modelConfig["id"];
+                    parentObject.add(object);
                 }, onProgress, onError);
 
         });

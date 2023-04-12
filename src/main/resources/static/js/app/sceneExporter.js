@@ -69,10 +69,13 @@ export function addSkybox(skyboxId, textureId, sceneName, projectConfig) {
 
 export function addModel(modelId, modelName, projectConfig) {
 
+    const {userId, id} = projectConfig.metadata;
+
     projectConfig.scene.model.push(
         {
             id: modelId,
             name: modelName,
+            url: "/" + userId + "/" + id + "/",
             rotation: {x: 0, y: 0, z: 0},
             position: {x: 0, y: 0, z: 0},
             scale: {x: 1, y: 1, z: 1},
