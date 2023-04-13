@@ -61,10 +61,10 @@ public class FileSystemStorageService implements StorageService {
             InputStream fos = file.getInputStream();
             Files.copy(fos, rootLocation.resolve(storageName));
             fos.close();
-            log.info("Resources Save Success:"+storageName);
+            log.info("Resources Save Success:" + storageName);
 
         } catch (IOException e) {
-            log.error("Resources Save Failed:"+file.getOriginalFilename()+" "+e.getMessage());
+            log.error("Resources Save Failed:" + file.getOriginalFilename() + " " + e.getMessage());
             throw new StorageException("Failed to store file" + file.getOriginalFilename(), e);
         }
     }
@@ -81,15 +81,15 @@ public class FileSystemStorageService implements StorageService {
                 }
 
             } catch (IOException e) {
-                log.error("Resources Save Failed:"+prefix+" configuration file "+e.getMessage());
+                log.error("Resources Save Failed:" + prefix + " configuration file " + e.getMessage());
                 throw new StorageException("Could not initialize storage", e);
             }
             String storageName = prefix + "projectConfig.json";
             Files.copy(new ByteArrayInputStream(str.getBytes()), rootLocation.resolve(storageName));
-            log.info("Resources Save Success:"+storageName);
+            log.info("Resources Save Success:" + storageName);
 
-        } catch(IOException e) {
-            log.error("Resources Save Failed:"+prefix+" configuration file "+e.getMessage());
+        } catch (IOException e) {
+            log.error("Resources Save Failed:" + prefix + " configuration file " + e.getMessage());
             System.out.println(e.getMessage());
         }
     }
@@ -103,9 +103,21 @@ public class FileSystemStorageService implements StorageService {
             }
 
         } catch (IOException e) {
-            log.error("Resources Save Failed:"+"FileSystemStorageService init Failed "+e.getMessage());
+            log.error("Resources Save Failed:" + "FileSystemStorageService init Failed " + e.getMessage());
             throw new StorageException("Could not initialize storage", e);
         }
 
+    }
+
+    @Override
+    public void delete(String path) {
+        try {
+            Files.deleteIfExists(this.rootLocation.resolve(path));
+            log.info("Resource Delete Success" + path);
+        } catch (IOException e) {
+
+            log.error("Resources Delete Failed:" + e.getMessage());
+
+        }
     }
 }

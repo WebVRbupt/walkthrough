@@ -49,8 +49,8 @@ function parseSceneConfig(scene, entityGroup, sceneConfig) {
     const texturesMap = generateTexturesMap(texturesConfigArr);
 
     //generateEditHelper(scene);
-    constructSkybox(scene, entityGroup, skyboxConfigArr, texturesMap);
-    constructNaviCircle(scene, entityGroup, naviConfigArr, texturesMap);
+    constructSkybox(entityGroup, skyboxConfigArr, texturesMap);
+    constructNaviCircle(entityGroup, naviConfigArr, texturesMap);
     constructModel(entityGroup, modelConfigArr, texturesMap);
     scene.add(entityGroup);
 
@@ -72,7 +72,7 @@ function generateTexturesMap(texturesConfigArr) {
 
 }
 
-function constructSkybox(scene, entityGroup, skyboxConfigArr, texturesMap) {
+function constructSkybox(parentObject, skyboxConfigArr, texturesMap) {
 
     console.log(skyboxConfigArr);
     const panoGroup = new THREE.Group();
@@ -128,11 +128,11 @@ function constructSkybox(scene, entityGroup, skyboxConfigArr, texturesMap) {
         panoGroup.add(skyBox);
 
     }
-    entityGroup.add(panoGroup);
+    parentObject.add(panoGroup);
 
 }
 
-function constructNaviCircle(scene, entityGroup, naviConfigArr, texturesMap) {
+function constructNaviCircle(parentObject, naviConfigArr, texturesMap) {
 
     console.log(naviConfigArr);
     const naviGroup = new THREE.Group();
@@ -158,7 +158,7 @@ function constructNaviCircle(scene, entityGroup, naviConfigArr, texturesMap) {
         mesh_circle.name = naviConfig["name"];
         mesh_circle.renderOrder = 11;
 
-        entityGroup.add(mesh_circle);
+        parentObject.add(mesh_circle);
     }
 
 }

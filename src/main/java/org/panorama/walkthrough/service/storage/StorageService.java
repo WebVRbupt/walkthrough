@@ -17,4 +17,6 @@ public interface StorageService {
 
     void store(String str,String prefix);
 
+    void delete(String path);
+
 }

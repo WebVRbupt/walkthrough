@@ -77,7 +77,7 @@ public class UploadResourcesController {
     @PostMapping("/uploadConfigFile/{userId}/{projectId}")
     String uploadConfigFile(@RequestBody String configFile, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId) {
 
-        log.info("Resources Upload:[Type-Project Configuration File] ID:" + projectId );
+        log.info("Resources Upload:[Type-Project Configuration File Create] ID:" + projectId);
         JSONObject projectConfig = JSON.parseObject(configFile);
         JSONObject metaInfo = projectConfig.getJSONObject("metadata");
 
@@ -110,6 +110,23 @@ public class UploadResourcesController {
 
         }
         return "upload configFile success";
+    }
+
+    @PostMapping("/updateConfigFile/{userId}/{projectId}")
+    String updateConfigFile(@RequestBody String configFile, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId) {
+        log.info("Resources Upload:[Type-Project Configuration File Update] ID:" + projectId);
+        String prefix = userId + "/" + projectId + "/";
+        String path = prefix + "projectConfig.json";
+        storageService.delete(path);
+
+        try {
+            storageService.store(configFile, prefix);
+        } catch (Exception ex) {
+
+            System.out.println(ex.getMessage());
+
+        }
+        return "update configFile success";
     }
 
 

@@ -66,7 +66,7 @@ public class UserManager {
 
     @RequestMapping("/u-create-project")
     public String uCreateProject() {
-        return "u-create-project";
+        return "u-project-create";
     }
 
 }

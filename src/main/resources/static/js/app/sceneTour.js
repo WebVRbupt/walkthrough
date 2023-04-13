@@ -21,7 +21,7 @@ import {sceneConstructor} from "./sceneConstructor.js"
 
 const configurationFileId = sessionStorage.getItem("configurationFileId");
 const userId = sessionStorage.getItem("userId");
-const projectConfigurationUrl = "/"+userId+"/"+configurationFileId+"/"+"projectConfig.json";
+const projectConfigurationUrl = "/" + userId + "/" + configurationFileId + "/" + "projectConfig.json";
 
 let container = document.getElementById("sceneContainer");
 
@@ -53,8 +53,9 @@ function init() {
     container.appendChild(renderer.domElement);
 
     scene.add(camera);
+    let entityGroup = new THREE.Group();
 
-    sceneConstructor(scene, projectConfigurationUrl, renderer, camera);
+    sceneConstructor(scene, entityGroup, projectConfigurationUrl);
 
     initControls();
     initLightAndHelper();

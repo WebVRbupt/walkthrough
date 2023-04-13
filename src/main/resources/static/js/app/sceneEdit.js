@@ -7,6 +7,7 @@ import {GLTFLoader} from "../lib/loaders/GLTFLoader.js";
 
 import {getAllChildren, rad2deg} from "../app/util.js"
 import {sceneConstructor} from "./sceneConstructor.js";
+import {updateSceneConfig} from "./sceneExporter.js";
 
 const configurationFileId = sessionStorage.getItem("configurationFileId");
 const userId = sessionStorage.getItem("userId");
@@ -59,8 +60,8 @@ function init() {
     entityGroup.name = "sceneEntity";
 
     sceneConstructor(scene, entityGroup, projectConfigurationUrl);
-    console.log(scene,"scene");
-    console.log(entityGroup,"entity")
+    console.log(scene, "scene");
+    console.log(entityGroup, "entity")
 
     initControls();
     initLightAndHelper();
@@ -494,14 +495,15 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
             })
         } else if (options.id === 9) {
             // 保存全景漫游
-            layer.open({
-                title: '保存全景行走漫游',
-                type: 1,
-                btn: ['确认', '取消'],
-                content: $('#saveSuccess'),
-                icon: 1
-
-            });
+            // layer.open({
+            //     title: '保存全景行走漫游',
+            //     type: 1,
+            //     btn: ['确认', '取消'],
+            //     content: $('#saveSuccess'),
+            //     icon: 1
+            //
+            // });
+            updateSceneConfig(scene,projectConfigurationUrl);
         } else if (options.id === 10) {
             // 清除场景
             scene.clear();
