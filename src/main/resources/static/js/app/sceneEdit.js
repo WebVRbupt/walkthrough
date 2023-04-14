@@ -11,7 +11,7 @@ import {updateSceneConfig} from "./sceneExporter.js";
 
 const configurationFileId = sessionStorage.getItem("configurationFileId");
 const userId = sessionStorage.getItem("userId");
-const projectConfigurationUrl = "/" + userId + "/" + configurationFileId + "/" + "projectConfig.json";
+const projectConfigurationUrl = "/project/getEditSources/" + userId + "/" + configurationFileId + "/" + "projectConfig.json";
 
 
 let container = document.getElementById("sceneContainer");

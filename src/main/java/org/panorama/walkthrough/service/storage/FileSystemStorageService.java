@@ -1,7 +1,5 @@
 package org.panorama.walkthrough.service.storage;
 
-import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.panorama.walkthrough.controller.UploadResourcesController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -110,14 +107,22 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
+    public InputStream getSource(String prefix, String simpleSourceName) throws StorageException,IOException{
+        String sourceFileName=prefix+simpleSourceName;
+        Path sourcePath=rootLocation.resolve(sourceFileName);
+        if (!Files.exists(sourcePath)){
+            throw new StorageException("No Such Resource Exception");
+        }
+        return Files.newInputStream(sourcePath);
+    }
+
+    @Override
     public void delete(String path) {
         try {
             Files.deleteIfExists(this.rootLocation.resolve(path));
             log.info("Resource Delete Success" + path);
         } catch (IOException e) {
-
             log.error("Resources Delete Failed:" + e.getMessage());
-
         }
     }
 }

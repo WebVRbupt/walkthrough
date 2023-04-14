@@ -3,13 +3,15 @@ package org.panorama.walkthrough.controller;
 import org.panorama.walkthrough.model.*;
 import org.panorama.walkthrough.repositories.ProjectInfo;
 import org.panorama.walkthrough.service.project.ProjectService;
+import org.panorama.walkthrough.service.storage.StorageService;
 import org.panorama.walkthrough.util.ResponseUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -22,8 +24,14 @@ import java.util.List;
 @Controller
 @RequestMapping("/project")
 public class ProjectManager {
-    @Autowired
+
     ProjectService projectService;
+    StorageService storageService;
+
+    public ProjectManager(ProjectService projectService, StorageService storageService) {
+        this.projectService = projectService;
+        this.storageService = storageService;
+    }
 
     @GetMapping("list")
     @ResponseBody
@@ -73,8 +81,24 @@ public class ProjectManager {
         HttpSession session = request.getSession();
         Project info = projectService.getProjectInfo(projectId);
         session.setAttribute("configurationFileId", info.getConfigFileId());
-        System.out.println("edit:"+projectId+"-"+info.getConfigFileId());
+        System.out.println("edit:" + projectId + "-" + info.getConfigFileId());
         return "u-project-edit";
+    }
+
+    @GetMapping(value = "getEditSources/{userId}/{configFileId}/{sourceName}", produces = MediaType.ALL_VALUE)
+    @ResponseBody
+    public byte[] getEditSource(HttpServletRequest request, @PathVariable(name = "userId") Long userId,
+                                @PathVariable(name = "configFileId") String configFileId,
+                                @PathVariable(name = "sourceName") String sourceName) {
+        String prefix = userId + "/" + configFileId + "/";
+        byte[] bytes;
+        try (InputStream inputStream = storageService.getSource(prefix, sourceName)) {
+            bytes = new byte[inputStream.available()];
+            inputStream.read(bytes, 0, inputStream.available());
+            return bytes;
+        } catch (Exception e) {
+            return "404".getBytes();
+        }
     }
 
     @GetMapping("tour")
@@ -82,7 +106,7 @@ public class ProjectManager {
         HttpSession session = request.getSession();
         Project info = projectService.getProjectInfo(projectId);
         session.setAttribute("configurationFileId", info.getConfigFileId());
-        System.out.println("tour:"+projectId+"-"+info.getConfigFileId());
+        System.out.println("tour:" + projectId + "-" + info.getConfigFileId());
         return "u-project-tour";
     }
 }

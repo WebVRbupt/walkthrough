@@ -7,6 +7,7 @@
 
 const configurationFileId = sessionStorage.getItem("configurationFileId");
 const userId = sessionStorage.getItem("userId");
+const PREFIX = "/project/getEditSources/"
 
 export function generateProjectConfig(projectId, userId) {
     const now = new Date();
@@ -22,7 +23,7 @@ export function generateProjectConfig(projectId, userId) {
             description: "",
             createDate: now.toString(),
             lastUpdate:now.toString(),
-            path: "/" + userId + "/" + projectId + "/",
+            path: PREFIX + userId + "/" + projectId + "/",
 
         },
         scene: {
@@ -46,7 +47,7 @@ export function addSkyboxTexture(textureId, textureName, fileType, projectConfig
             id: textureId,
             name: textureName,
             type: "skybox",
-            url: "/" + userId + "/" + id + "/" + textureId + fileType,
+            url: PREFIX + userId + "/" + id + "/" + textureId + fileType,
         }
     );
 
@@ -79,7 +80,7 @@ export function addModel(modelId, modelName, projectConfig) {
         {
             id: modelId,
             name: modelName,
-            url: "/" + userId + "/" + id + "/",
+            url: PREFIX + userId + "/" + id + "/",
             rotation: {x: 0, y: 0, z: 0},
             position: {x: 0, y: 0, z: 0},
             scale: {x: 1, y: 1, z: 1},
