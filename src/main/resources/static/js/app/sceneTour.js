@@ -103,7 +103,6 @@ function initControls() {
 
     orbitControls = new OrbitControls(camera, renderer.domElement);
     orbitControls.enabled = false;
-    camera.position.set(0, 0, 2);
 
     firstPerson = new FirstPersonCameraControl(camera, renderer.domElement);
     firstPerson.enabled = true;

@@ -24,6 +24,8 @@ export function generateProjectConfig(projectId, userId) {
             createDate: now.toString(),
             lastUpdate: now.toString(),
             path: PREFIX + userId + "/" + projectId + "/",
+            initView:null
+
 
         },
         scene: {
@@ -65,7 +67,7 @@ export function addSkybox(skyboxId, textureId, sceneName, projectConfig) {
             id: skyboxId,
             texture: [textureId],
             position: {x: 0, y: 0, z: offset},
-            geometryScale: {x: 1, y: 1, z: 1},
+            geometryScale: {x: 1, y: 1, z: -1},
             scale: {x: 1, y: 1, z: 1},
             rotation: {x: 0, y: 0, z: 0}
         }

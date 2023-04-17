@@ -21,6 +21,7 @@ export function sceneConstructor(scene, entityGroup, jsonUrl) {
             sceneConfig = json;
             console.log(sceneConfig, "sceneConfig")
             parseSceneConfig(scene, entityGroup, sceneConfig);
+            setInitView(scene, sceneConfig);
         });
 
 }
@@ -279,5 +280,19 @@ function getTexturesFromAtlasFile(atlasImgUrl, tilesNum) {
         });
 
     return textures;
+
+}
+
+// 设置初始视角,如果项目配置文件metadata.initView未定义则设置初始视角设置为第一个天空盒的位置.
+function setInitView(scene, sceneConfig) {
+
+    const skyboxConfigArr = sceneConfig["scene"]["skybox"];
+    let cameraPos = sceneConfig["metadata"].initView !== null ? sceneConfig["metadata"].initView : skyboxConfigArr[0].position;
+
+    for (const obj3d of scene.children) {
+        if (obj3d.isPerspectiveCamera) {
+            obj3d.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
+        }
+    }
 
 }
