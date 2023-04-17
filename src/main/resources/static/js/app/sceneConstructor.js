@@ -15,7 +15,7 @@ export function sceneConstructor(scene, entityGroup, jsonUrl) {
 
     let sceneConfig;
     // let scene = new THREE.Scene();
-    fetch(jsonUrl)
+    fetch(jsonUrl, {cache: "reload"})
         .then((response) => response.json())
         .then((json) => {
             sceneConfig = json;
@@ -224,8 +224,8 @@ function loadModel(parentObject, manager, modelConfig) {
                     obj.children[0].scale.set(modelConfig["scale"].x, modelConfig["scale"].y, modelConfig["scale"].z);
 
                     console.log(object.position);
-                    obj.children[0].name=modelConfig["name"];
-                    obj.children[0].customId=modelConfig["id"];
+                    obj.children[0].name = modelConfig["name"];
+                    obj.children[0].customId = modelConfig["id"];
                     parentObject.add(object);
                 }, onProgress, onError);
 
