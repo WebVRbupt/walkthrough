@@ -120,7 +120,7 @@ public class FileSystemStorageService implements StorageService {
     public void delete(String path) {
         try {
             Files.deleteIfExists(this.rootLocation.resolve(path));
-            log.info("Resource Delete Success" + path);
+            log.info("Resource Delete Successful:" + path);
         } catch (IOException e) {
             log.error("Resources Delete Failed:" + e.getMessage());
         }

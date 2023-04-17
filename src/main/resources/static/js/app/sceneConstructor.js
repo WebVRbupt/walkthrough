@@ -216,9 +216,12 @@ function loadModel(parentObject, manager, modelConfig) {
                     // obj.name = modelConfig["name"];
                     obj.name = "mtlModel";
 
-                    obj.rotateX(modelConfig["rotation"].x);
-                    obj.rotateY(modelConfig["rotation"].y);
-                    obj.rotateZ(modelConfig["rotation"].z);
+                    obj.children[0].rotateX(modelConfig["rotation"].x);
+                    obj.children[0].rotateY(modelConfig["rotation"].y);
+                    obj.children[0].rotateZ(modelConfig["rotation"].z);
+
+                    obj.children[0].position.copy(new THREE.Vector3(modelConfig["position"].x, modelConfig["position"].y, modelConfig["position"].z));
+                    obj.children[0].scale.set(modelConfig["scale"].x, modelConfig["scale"].y, modelConfig["scale"].z);
 
                     console.log(object.position);
                     obj.children[0].name=modelConfig["name"];

@@ -22,7 +22,7 @@ export function generateProjectConfig(projectId, userId) {
             name: "",
             description: "",
             createDate: now.toString(),
-            lastUpdate:now.toString(),
+            lastUpdate: now.toString(),
             path: PREFIX + userId + "/" + projectId + "/",
 
         },
@@ -88,6 +88,7 @@ export function addModel(modelId, modelName, projectConfig) {
     )
 }
 
+// 全景漫游可视化编辑页面保存场景信息的入口方法，读取配置文件更新后写回.
 export function updateSceneConfig(scene, sceneConfigUrl) {
     let sceneConfig;
     // let scene = new THREE.Scene();
@@ -109,18 +110,19 @@ export function updateSceneConfig(scene, sceneConfigUrl) {
         });
 }
 
-function updateMetaInfo(sceneConfig){
+function updateMetaInfo(sceneConfig) {
     const now = new Date();
     sceneConfig["metadata"].lastUpdate = now.toString();
 }
 
+// 更新项目配置文件中场景天空盒相关的信息.
 function updateSkyboxInfo(scene, sceneConfig) {
 
     const skyboxConfigArr = sceneConfig["scene"]["skybox"];
     const skyboxArr = getSkyboxArr(scene);
     console.log(skyboxArr, "skyboxArr");
     const skyboxMap = genObjectMap(skyboxArr);
-    for(const skyboxConfig of skyboxConfigArr){
+    for (const skyboxConfig of skyboxConfigArr) {
         let skybox = skyboxMap.get(skyboxConfig["id"]);
         skyboxConfig["rotation"].x = skybox.rotation.x;
         skyboxConfig["rotation"].y = skybox.rotation.y;
@@ -136,17 +138,53 @@ function updateSkyboxInfo(scene, sceneConfig) {
     }
 }
 
+// 更新项目配置文件中导航热点相关的信息.
 function updateNaviCircleInfo(scene, sceneConfig) {
     const naviConfigArr = sceneConfig["scene"]["navi"];
     const naviCircleArr = getNaviCircleArr(scene);
     console.log(naviCircleArr, "naviCircleArr");
+    const naviCircleMap = genObjectMap(naviCircleArr);
+    for (const naviConfig of naviConfigArr) {
+        const navi = naviCircleMap.get(naviConfig["id"]);
+        naviConfig["rotation"].x = navi.rotation.x;
+        naviConfig["rotation"].y = navi.rotation.y;
+        naviConfig["rotation"].z = navi.rotation.z;
+
+        naviConfig["position"].x = navi.position.x;
+        naviConfig["position"].y = navi.position.y;
+        naviConfig["position"].z = navi.position.z;
+
+        naviConfig["scale"].x = navi.scale.x;
+        naviConfig["scale"].y = navi.scale.y;
+        naviConfig["scale"].z = navi.scale.z;
+
+    }
 }
 
+// 更新项目配置文件中空间模型相关的信息.
 function updateModelInfo(scene, sceneConfig) {
 
     const modelConfigArr = sceneConfig["scene"]["model"];
     const spaceModelArr = getModelArr(scene);
     console.log(spaceModelArr, "spaceModelArr");
+    const spaceModelMap = genObjectMap(spaceModelArr);
+    for (let modelConfig of modelConfigArr) {
+        const spaceModel = spaceModelMap.get(modelConfig["id"]);
+
+        modelConfig["position"].x = spaceModel.position.x;
+        modelConfig["position"].y = spaceModel.position.y;
+        modelConfig["position"].z = spaceModel.position.z;
+
+        modelConfig["rotation"].x = spaceModel.rotation.x;
+        modelConfig["rotation"].y = spaceModel.rotation.y;
+        modelConfig["rotation"].z = spaceModel.rotation.z;
+
+        modelConfig["scale"].x = spaceModel.scale.x;
+        modelConfig["scale"].y = spaceModel.scale.z;
+        modelConfig["scale"].z = spaceModel.scale.z;
+
+    }
+
 
 }
 
@@ -188,9 +226,13 @@ function getObjectArr(scene, groupName) {
 function genObjectMap(objectArr) {
 
     let objectMap = new Map;
-    for (const obj of objectArr) {
-        objectMap.set(obj.customId, obj);
+    console.log(objectArr);
+    if (objectArr !== null && objectArr !== undefined) {
+        for (const obj of objectArr) {
+            objectMap.set(obj.customId, obj);
+        }
     }
+
     return objectMap;
 
 }

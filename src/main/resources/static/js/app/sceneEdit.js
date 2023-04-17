@@ -503,26 +503,14 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
             //     icon: 1
             //
             // });
-            updateSceneConfig(scene,projectConfigurationUrl);
+            updateSceneConfig(scene, projectConfigurationUrl);
         } else if (options.id === 10) {
             // 清除场景
             scene.clear();
             console.log(scene, "after clear");
         } else if (options.id === 11) {
-            // 从json文件中恢复场景
-
-            loadModel();
-
-            fetch('./user_source/newTest/sceneWithLight.json')
-                .then(data => data.json())
-                .then((data) => {
-                        const loader = new THREE.ObjectLoader();
-                        scene = loader.parse(data);
-                        recoverTexture(scene);
-                        recoverSceneFromJson(scene);
-                        console.log(scene);
-                    }
-                )
+            // 打印选中物体信息(DEBUG)
+            console.log(currentSelected);
 
 
         } else if (options.id === 12) {
