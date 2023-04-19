@@ -1,13 +1,16 @@
-import * as THREE from "../build/three.module.js";
+import * as THREE from "/js/build/three.module.js";
 
-import {OrbitControls} from "../lib/controls/OrbitControls.js";
-import {FirstPersonCameraControl} from "../lib/controls/firstPersonCameraControl.js";
-import {TransformControls} from "../lib/controls/TransformControls.js"
-import {GLTFLoader} from "../lib/loaders/GLTFLoader.js";
+import {OrbitControls} from "/js/lib/controls/OrbitControls.js";
+import {FirstPersonCameraControl} from "/js/lib/controls/firstPersonCameraControl.js";
+import {TransformControls} from "/js/lib/controls/TransformControls.js"
+import {GLTFLoader} from "/js/lib/loaders/GLTFLoader.js";
 
-import {getAllChildren, rad2deg} from "../app/util.js"
-import {sceneConstructor} from "./sceneConstructor.js";
-import {updateSceneConfig} from "./sceneExporter.js";
+import {getAllChildren, rad2deg} from "/js/app/util.js"
+import {sceneConstructor, getTexturesFromAtlasFile} from "/js/app/sceneConstructor.js";
+import {updateSceneConfig} from "/js/app/sceneExporter.js";
+
+import {genCubeMap} from '/js/app/generateTextures.js'
+import {nanoid} from "/js/build/nanoid.js";
 
 const configurationFileId = sessionStorage.getItem("configurationFileId");
 const userId = sessionStorage.getItem("userId");
@@ -38,10 +41,15 @@ let lockedObjectSet = new Set();
 let enableSelect = false;
 let scaleSlider = null;
 
+let showAddSkyboxModal;
+
+const genIdLength = 17;
+
 init();
 animate();
 
 function init() {
+
     scene = new THREE.Scene();
     scene2 = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -370,6 +378,156 @@ function selectNextObject() {
     updateObjectByIndex(currentSelectedIndex);
 }
 
+/**
+ *
+ * @param scene
+ * @param sceneInfo {sceneName,skyboxId,textureUrl}
+ */
+function addSceneSkybox(scene, sceneInfo) {
+
+    for (const obj3d of scene.children) {
+        if (obj3d.name === "sceneEntity") {
+            for (const entityGroup of obj3d.children) {
+                if (entityGroup.name === "panoGroup") {
+
+                    const materials = [];
+                    const textures = getTexturesFromAtlasFile(sceneInfo.textureUrl, 6);
+                    for (let i = 0; i < 6; ++i) {
+                        materials.push(new THREE.MeshBasicMaterial({map: textures[i]}));
+                    }
+                    const skyBox = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), materials);
+
+                    skyBox.geometry.scale(1, 1, -1);
+                    skyBox.scale.set(1, 1, 1);
+
+                    skyBox.rotation.x = 0;
+                    skyBox.rotation.y = 0;
+                    skyBox.rotation.z = 0;
+
+                    skyBox.position.copy(new THREE.Vector3(0, 0, entityGroup.children.length));
+                    skyBox.name = sceneInfo.sceneName;
+                    skyBox.customId = sceneInfo.skyboxId;
+                    entityGroup.add(skyBox);
+                }
+            }
+
+        }
+    }
+
+}
+
+const AddSkyboxContent = () => {
+
+    const [form] = antd.Form.useForm();
+    const [isSceneInfoModalOpen, setIsSceneInfoModalOpen] = React.useState(false);
+    const [sceneInfoData, setSceneInfoData] = React.useState(null);
+    const [actionUrl, setActionUrl] = React.useState("");
+    const uploadButtonRef = React.useRef(null);
+
+    showAddSkyboxModal = () => {
+        setIsSceneInfoModalOpen(true);
+    };
+
+    const handleSceneInfoModalOk = () => {
+
+        form.validateFields().then((values) => {
+            form.resetFields();
+            setSceneInfoData({sceneName: values.sceneName})
+            setIsSceneInfoModalOpen(false);
+            uploadButtonRef.current.click();
+
+        }).catch((info) => {
+            console.log('validate Failed:', info);
+        })
+
+    };
+
+    const handleSceneInfoModalCancel = () => {
+
+        setIsSceneInfoModalOpen(false);
+    };
+
+    const handleBeforeUpload = (file) => {
+
+        const picId = nanoid(genIdLength);
+        const skyboxId = nanoid(genIdLength);
+        setActionUrl("/addSkybox/" + userId + "/" + configurationFileId + "/" + picId + "/" + skyboxId);
+
+        return new Promise((resolve, reject) => {
+
+            genCubeMap(file, resolve);
+
+        })
+
+
+    }
+
+    const handleAfterUpload = (result) => {
+
+        console.log(result);
+        if (result.file.status === "done") {
+            addSceneSkybox(scene, result.file.response)
+        }
+
+    }
+
+    return (
+        <div>
+            <antd.Upload id={"addSkyboxUpload"}
+                         accept={"image/png, image/jpeg"}
+                         action={actionUrl}
+                         style={{display: 'none'}}
+                         showUploadList={false}
+                         data={sceneInfoData}
+                         beforeUpload={handleBeforeUpload}
+                         onChange={handleAfterUpload}>
+                <antd.Button style={{display: "none"}} ref={uploadButtonRef}></antd.Button>
+            </antd.Upload>
+            <antd.Modal title="场景信息" open={isSceneInfoModalOpen} onOk={handleSceneInfoModalOk}
+                        onCancel={handleSceneInfoModalCancel}>
+                <antd.Form
+                    form={form}
+                    name="sceneInfo"
+                    layout="vertical"
+                    initialValues={{
+                        remember: true,
+                    }}
+                    onFinish={() => {
+                    }}
+                    onFinishFailed={() => {
+                    }}
+                    autoComplete="off"
+                >
+                    <antd.Form.Item
+                        label="场景名称"
+                        name="sceneName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your sceneName!',
+                            },
+                        ]}
+                    >
+                        <antd.Input/>
+                    </antd.Form.Item>
+                    <antd.Form.Item
+                        label="场景描述"
+                        name="sceneDescription"
+                        rules={[
+                            {
+                                required: false,
+                            },
+                        ]}
+                    >
+                        <antd.Input/>
+                    </antd.Form.Item>
+                </antd.Form>
+            </antd.Modal>
+        </div>
+    );
+
+}
+
 layui.use('slider', function () {
     var slider = layui.slider;
 
@@ -453,6 +611,7 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
             a.click();
         } else if (options.id === 2) {
             // 添加场景
+            showAddSkyboxModal();
 
         } else if (options.id === 3) {
             // 添加热点
@@ -561,5 +720,11 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
         }
     })
 })
+
+const app = document.getElementById("app");
+const root = ReactDOM.createRoot(app);
+root.render(
+    <AddSkyboxContent></AddSkyboxContent>
+);
 
 

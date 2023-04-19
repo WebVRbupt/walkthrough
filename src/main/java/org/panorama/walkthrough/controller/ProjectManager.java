@@ -44,10 +44,10 @@ public class ProjectManager {
         User user = (User) session.getAttribute("user");
         List<ProjectInfo> res = projectService.getProjectIntroList(user.getUserId());
         if (null == res) {
-            log.info("Request   [Get]/project/list  Failed  userId:" + user.getUserId() + "not found");
+            log.info("Request\t[Get]/project/list\tFailed\tuserId:" + user.getUserId() + "not found");
             return ResponseUtil.error(ResponseEnum.ERROR_404);
         } else {
-            log.info("Request   [Get]/project/list  Successful  userId:" + user.getUserId());
+            log.info("Request\t[Get]/project/list\tSuccessful\tuserId:" + user.getUserId());
             return ResponseUtil.success(res, res.size());
         }
     }
@@ -56,10 +56,10 @@ public class ProjectManager {
     @ResponseBody
     public ResponseEntity addProject(@RequestBody ProjectIntro projectIntro, HttpServletRequest request) {
         if (projectService.addProject(projectIntro, request)) {
-            log.info("Request   [Post]/project/add  Successful");
+            log.info("Request\t[Post]/project/add\tSuccessful");
             return ResponseUtil.success();
         } else {
-            log.info("Request   [Post]/project/add  Failed");
+            log.info("Request\t[Post]/project/add\tFailed");
             return ResponseUtil.error(ResponseEnum.FAIL);
         }
     }
@@ -68,10 +68,10 @@ public class ProjectManager {
     @ResponseBody
     public ResponseEntity deleteProject(@RequestParam("projectId") Long projectId) {
         if (projectService.deleteProject(projectId)) {
-            log.info("Request   [Get]/project/delete  Successful   projectId:" + projectId);
+            log.info("Request\t[Get]/project/delete\tSuccessful\tprojectId:" + projectId);
             return ResponseUtil.success();
         } else {
-            log.info("Request   [Get]/project/delete  Failed   projectId:" + projectId);
+            log.info("Request\t[Get]/project/delete\tFailed\tprojectId:" + projectId);
             return ResponseUtil.error(ResponseEnum.FAIL);
         }
     }
@@ -80,10 +80,10 @@ public class ProjectManager {
     @ResponseBody
     public ResponseEntity updateProjectIntro(@RequestBody ProjectIntro projectIntro) {
         if (projectService.updateProjectIntro(projectIntro)) {
-            log.info("Request   [Post]/project/updateIntro  Successful   projectIntro:" + projectIntro);
+            log.info("Request\t[Post]/project/updateIntro\tSuccessful\tprojectIntro:" + projectIntro);
             return ResponseUtil.success();
         } else {
-            log.info("Request   [Post]/project/updateIntro  Failed   projectIntro:" + projectIntro);
+            log.info("Request\t[Post]/project/updateIntro\tFailed\tprojectIntro:" + projectIntro);
             return ResponseUtil.error(ResponseEnum.FAIL);
         }
     }
@@ -93,7 +93,7 @@ public class ProjectManager {
         HttpSession session = request.getSession();
         Project info = projectService.getProjectInfo(projectId);
         session.setAttribute("configurationFileId", info.getConfigFileId());
-        log.info("Request   [Get]/project/edit  Successful   projectId:" + projectId);
+        log.info("Request\t[Get]/project/edit\tSuccessful\tprojectId:" + projectId);
         return "u-project-edit";
     }
 
@@ -107,10 +107,10 @@ public class ProjectManager {
         try (InputStream inputStream = storageService.getSource(prefix, sourceName)) {
             bytes = new byte[inputStream.available()];
             inputStream.read(bytes, 0, inputStream.available());
-            log.info("Request   [Get]/project/getEditSources  Successful " + prefix + sourceName);
+            log.info("Request\t[Get]/project/getEditSources\tSuccessful\t" + prefix + sourceName);
             return bytes;
         } catch (Exception e) {
-            log.info("Request   [Get]/project/getEditSources  Failed Not Found " + prefix + sourceName);
+            log.info("Request\t[Get]/project/getEditSources\tFailed Not Found\t" + prefix + sourceName);
             return "404".getBytes();
         }
     }
@@ -120,7 +120,7 @@ public class ProjectManager {
         HttpSession session = request.getSession();
         Project info = projectService.getProjectInfo(projectId);
         session.setAttribute("configurationFileId", info.getConfigFileId());
-        log.info("Request   [Get]/project/tour  Successful  projectId:" + projectId);
+        log.info("Request\t[Get]/project/tour\tSuccessful\tprojectId:" + projectId);
         return "u-project-tour";
     }
 }

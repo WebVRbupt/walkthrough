@@ -5,9 +5,19 @@
     <title>全景项目编辑</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" type="text/css" href="/css/sceneEdit.css">
+
     <script src="/layui/layui.js"></script>
+
+    <script crossorigin src="/js/build/react.development.js"></script>
+    <script crossorigin src="/js/build/react-dom.development.js"></script>
+    <script src="/js/build/babel.min.js"></script>
+    <script src="/js/build/dayjs.min.js"></script>
+    <script src="/js/build/antd.js"></script>
+    <link href="/js/build/reset.css" rel="stylesheet">
+
     <script src="/js/lib/axios.min.js"></script>
-    <script src="/js/app/sceneEdit.js" type="module"></script>
+    <script src="/js/app/sceneEdit.js" type="text/babel" data-type="module"></script>
+
 </head>
 <body>
 <div class="layui-panel">
@@ -40,6 +50,7 @@
     </div>
     <div class="layui-body" style="left: 0">
         <div class="sceneContainer" id="sceneContainer"></div>
+        <div id="app"></div>
     </div>
 
     <div class="layui-panel" id="editPanel">

@@ -249,7 +249,7 @@ function generateEditHelper(scene) {
     scene.add(new THREE.GridHelper(20, 20));
 }
 
-function getTexturesFromAtlasFile(atlasImgUrl, tilesNum) {
+export function getTexturesFromAtlasFile(atlasImgUrl, tilesNum) {
 
     const textures = [];
 
@@ -287,11 +287,13 @@ function getTexturesFromAtlasFile(atlasImgUrl, tilesNum) {
 function setInitView(scene, sceneConfig) {
 
     const skyboxConfigArr = sceneConfig["scene"]["skybox"];
-    let cameraPos = sceneConfig["metadata"].initView !== null ? sceneConfig["metadata"].initView : skyboxConfigArr[0].position;
+    let cameraPos = (sceneConfig["metadata"].initView !== null && sceneConfig["metadata"].initView !== undefined) ? sceneConfig["metadata"].initView : skyboxConfigArr[0].position;
+    // let cameraPos = skyboxConfigArr[0].position;
 
     for (const obj3d of scene.children) {
         if (obj3d.isPerspectiveCamera) {
             obj3d.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
+            return;
         }
     }
 

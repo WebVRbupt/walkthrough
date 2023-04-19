@@ -419,7 +419,6 @@ const UploadSceneContent = () => {
         </div>
     );
 
-
 }
 
 // Step3. 上传空间模型组件.

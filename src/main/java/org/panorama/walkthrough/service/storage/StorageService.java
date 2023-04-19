@@ -23,4 +23,6 @@ public interface StorageService {
 
     void delete(String path);
 
+    byte[] readJsonFile(String path);
+
 }

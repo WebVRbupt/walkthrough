@@ -107,10 +107,10 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public InputStream getSource(String prefix, String simpleSourceName) throws StorageException,IOException{
-        String sourceFileName=prefix+simpleSourceName;
-        Path sourcePath=rootLocation.resolve(sourceFileName);
-        if (!Files.exists(sourcePath)){
+    public InputStream getSource(String prefix, String simpleSourceName) throws StorageException, IOException {
+        String sourceFileName = prefix + simpleSourceName;
+        Path sourcePath = rootLocation.resolve(sourceFileName);
+        if (!Files.exists(sourcePath)) {
             throw new StorageException("No Such Resource Exception");
         }
         return Files.newInputStream(sourcePath);
@@ -124,5 +124,20 @@ public class FileSystemStorageService implements StorageService {
         } catch (IOException e) {
             log.error("Resources Delete Failed:" + e.getMessage());
         }
+    }
+
+    public byte[] readJsonFile(String path) {
+
+        byte[] jsonFile = new byte[]{};
+
+        try {
+            jsonFile = Files.readAllBytes(rootLocation.resolve(path));
+        } catch (IOException ex) {
+            log.error("Read Json File Failed Path:" + path);
+            System.out.println(ex.getMessage());
+        }
+
+        return jsonFile;
+
     }
 }
