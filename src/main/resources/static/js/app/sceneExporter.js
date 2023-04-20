@@ -9,13 +9,19 @@ const configurationFileId = sessionStorage.getItem("configurationFileId");
 const userId = sessionStorage.getItem("userId");
 const PREFIX = "/project/getEditSources/"
 
+/**
+ * 生成创建新项目的初始默认配置文件json字符串
+ * @param projectId
+ * @param userId
+ * @returns {{metadata: {path: string, initView: null, lastUpdate: string, name: string, description: string, id, type: string, projectId: number, userId: number, createDate: string}, textures: *[], scene: {skybox: *[], navi: *[], model: *[]}}}
+ */
 export function generateProjectConfig(projectId, userId) {
     const now = new Date();
     return {
 
         metadata: {
 
-            id: projectId,       //前端生成的项目id
+            id: projectId,       //配置文件id
             projectId: -1,       //项目的数据库id
             userId: parseInt(userId),
             type: "",
@@ -24,7 +30,7 @@ export function generateProjectConfig(projectId, userId) {
             createDate: now.toString(),
             lastUpdate: now.toString(),
             path: PREFIX + userId + "/" + projectId + "/",
-            initView:null
+            initView: null
 
 
         },
@@ -38,6 +44,13 @@ export function generateProjectConfig(projectId, userId) {
     };
 }
 
+/**
+ * 创建新项目时为项目配置文件 'projectConfig' 的 'texture' 项 添加一个新的贴图项.
+ * @param textureId
+ * @param textureName
+ * @param fileType
+ * @param projectConfig
+ */
 export function addSkyboxTexture(textureId, textureName, fileType, projectConfig) {
 
     console.log("addskyboxTexture");
@@ -55,6 +68,13 @@ export function addSkyboxTexture(textureId, textureName, fileType, projectConfig
 
 }
 
+/**
+ * 创建新项目时为项目配置文件 'projectConfig' 的 'scene.skybox' 项添加一个新的天空盒项.
+ * @param skyboxId
+ * @param textureId
+ * @param sceneName
+ * @param projectConfig
+ */
 export function addSkybox(skyboxId, textureId, sceneName, projectConfig) {
 
     console.log("addskybox");
@@ -74,6 +94,12 @@ export function addSkybox(skyboxId, textureId, sceneName, projectConfig) {
     )
 }
 
+/**
+ * 创建新项目时为项目配置文件 'projectConfig' 的 'scene.skybox' 项添加一个新的模型项.
+ * @param modelId
+ * @param modelName
+ * @param projectConfig
+ */
 export function addModel(modelId, modelName, projectConfig) {
 
     const {userId, id} = projectConfig.metadata;
@@ -90,7 +116,11 @@ export function addModel(modelId, modelName, projectConfig) {
     )
 }
 
-// 全景漫游可视化编辑页面保存场景信息的入口方法，读取配置文件更新后写回.
+/**
+ * 全景漫游可视化编辑页面 '保存场景信息' 的入口方法，读取配置文件更新后写回.
+ * @param scene
+ * @param sceneConfigUrl
+ */
 export function updateSceneConfig(scene, sceneConfigUrl) {
     let sceneConfig;
     // let scene = new THREE.Scene();
@@ -112,12 +142,20 @@ export function updateSceneConfig(scene, sceneConfigUrl) {
         });
 }
 
+/**
+ * 全景漫游可视化编辑页面 '保存场景信息' 功能调用后更新配置文件的 'metadata.lastUpdate’ 属性,记录最后更新配置文件的时间.
+ * @param sceneConfig
+ */
 function updateMetaInfo(sceneConfig) {
     const now = new Date();
     sceneConfig["metadata"].lastUpdate = now.toString();
 }
 
-// 更新项目配置文件中场景天空盒相关的信息.
+/**
+ * 遍历配置文件 'sceneConfig' 的 'scene.skybox' 每一项,查找 three.js场景 'scene' 中 customId 一致的object更新skybox的几何属性.
+ * @param scene
+ * @param sceneConfig
+ */
 function updateSkyboxInfo(scene, sceneConfig) {
 
     const skyboxConfigArr = sceneConfig["scene"]["skybox"];
@@ -140,7 +178,12 @@ function updateSkyboxInfo(scene, sceneConfig) {
     }
 }
 
-// 更新项目配置文件中导航热点相关的信息.
+
+/**
+ * 遍历配置文件 'sceneConfig' 的 'scene.navi' 每一项,查找 three.js场景 'scene' 中 customId 一致的object更新导航热点的几何属性.
+ * @param scene
+ * @param sceneConfig
+ */
 function updateNaviCircleInfo(scene, sceneConfig) {
     const naviConfigArr = sceneConfig["scene"]["navi"];
     const naviCircleArr = getNaviCircleArr(scene);
@@ -163,7 +206,11 @@ function updateNaviCircleInfo(scene, sceneConfig) {
     }
 }
 
-// 更新项目配置文件中空间模型相关的信息.
+/**
+ * 遍历配置文件 'sceneConfig' 的 'scene.model' 每一项,查找 three.js场景 'scene' 中 customId 一致的object更新导航模型的几何属性.
+ * @param scene
+ * @param sceneConfig
+ */
 function updateModelInfo(scene, sceneConfig) {
 
     const modelConfigArr = sceneConfig["scene"]["model"];
@@ -190,28 +237,46 @@ function updateModelInfo(scene, sceneConfig) {
 
 }
 
-// 获取场景下 Skybox 对象数组.
+/**
+ * 获取three.js场景 'scene' 下场景天空盒对象数组.
+ * @param scene
+ * @returns {Array:Object3D}
+ */
 function getSkyboxArr(scene) {
 
     return getObjectArr(scene, "panoGroup");
 
 }
 
-// 获取场景下 naviCircle 对象数组.
+/**
+ * 获取three.js场景 'scene' 下导航热点对象数组.
+ * @param scene
+ * @returns {Array:Object3D}
+ */
 function getNaviCircleArr(scene) {
 
     return getObjectArr(scene, "naviGroup");
 
 }
 
-// 获取场景下 spaceModel 对象数组.
+
+/**
+ * 获取three.js场景 'scene' 下空间模型对象数组.
+ * @param scene
+ * @returns {Array:Object3D}
+ */
 function getModelArr(scene) {
 
     return getObjectArr(scene, "mtlModel");
 
 }
 
-// 根据场景中对象所属父Group元素的name属性返回对象数组.
+/**
+ * 根据three.js场景 'scene' 中 'Object3D' 对象所属父Group元素的name属性返回 'Object3D' 对象数组.
+ * @param scene
+ * @param groupName "panoGroup" | "naviGroup" | "mtlModel"
+ * @returns {Array:Object3D}
+ */
 function getObjectArr(scene, groupName) {
 
     for (let obj3d of scene.children) {
@@ -224,7 +289,11 @@ function getObjectArr(scene, groupName) {
     }
 }
 
-// 根据参数传入的 three.js 对象数组生成 `customId` 为 key ,场景3d对象为 value的Map.
+/**
+ * 传入一个 three.js 'Object3D' 对象数组,返回以 'customId' 为 key,该 'Object3D'对象为 value 的 Map.
+ * @param objectArr
+ * @returns {Map<string, Object3D>}
+ */
 function genObjectMap(objectArr) {
 
     let objectMap = new Map;

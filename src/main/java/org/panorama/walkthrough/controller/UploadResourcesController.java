@@ -58,7 +58,7 @@ public class UploadResourcesController {
     @PostMapping("/uploadPic/{userId}/{projectId}/{picId}")
     String uploadPic(@RequestParam("file") MultipartFile file, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId, @PathVariable("picId") String picId) {
         String fileName = file.getOriginalFilename();
-        log.info("Resources [Upload]    Picture:" + fileName);
+        log.info("Resources\t[Upload]\tPicture:" + fileName);
         JSONObject statusInfo = new JSONObject();
         statusInfo.put("code", 0);
         statusInfo.put("msg", "upload success");
@@ -80,9 +80,11 @@ public class UploadResourcesController {
      * @return statusInfo
      */
     @PostMapping("/addSkybox/{userId}/{projectId}/{picId}/{skyboxId}")
-    String addSkybox(@RequestParam("file") MultipartFile file, @RequestParam("sceneName") String sceneName, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId, @PathVariable("picId") String picId, @PathVariable("skyboxId") String skyboxId) {
+    String addSkybox(@RequestParam("file") MultipartFile file, @RequestParam("sceneName") String sceneName,
+                     @PathVariable("userId") String userId, @PathVariable("projectId") String projectId,
+                     @PathVariable("picId") String picId, @PathVariable("skyboxId") String skyboxId) {
 
-        log.info("Request\t[Post]/addSkybox    path:/" + userId + "/" + projectId + "/" + picId);
+        log.info("Request\t[Post]/addSkybox\tpath:/" + userId + "/" + projectId + "/" + picId + "/" + skyboxId);
         JSONObject statusInfo = new JSONObject();
 
         String configurationFilePath = userId + "/" + projectId + "/" + "projectConfig.json";
@@ -114,7 +116,7 @@ public class UploadResourcesController {
             newTexture.put("id", picId);
             newTexture.put("name", sceneName);
             newTexture.put("type", "skybox");
-            newTexture.put("url", "/project/getEditSources/" + userId + "/" + projectId + "/" + picId + ".jpg");
+            newTexture.put("url", "/project/getEditSources/" + userId + "/" + projectId + "/" + picId + suffix);
 
             newSkybox.put("name", sceneName);
             newSkybox.put("id", skyboxId);
@@ -154,6 +156,83 @@ public class UploadResourcesController {
         return JSON.toJSONString(statusInfo);
     }
 
+    @PostMapping("/addNavi/{userId}/{projectId}/{picId}/{skyboxId}")
+    String addNavi(@RequestParam("file") MultipartFile file, @RequestParam("naviName") String naviName,
+                   @PathVariable("userId") String userId, @PathVariable("projectId") String projectId,
+                   @PathVariable("picId") String picId, @PathVariable("skyboxId") String naviId) {
+
+        log.info("Request\t[Post]/addNavi\tpath:/" + userId + "/" + projectId + "/" + picId + "/" + naviId);
+        JSONObject statusInfo = new JSONObject();
+
+        String configurationFilePath = userId + "/" + projectId + "/" + "projectConfig.json";
+        byte[] configurationFile = storageService.readJsonFile(configurationFilePath);
+        if (configurationFile.length == 0) {
+            statusInfo.put("code", 1);
+            statusInfo.put("msg", "add navi failed");
+        } else {
+            String fileName = file.getOriginalFilename();
+            String prefix = userId + "/" + projectId + "/";
+            String suffix = fileName.substring(fileName.lastIndexOf('.'));
+            String path = prefix + "projectConfig.json";
+            statusInfo.put("code", 0);
+            statusInfo.put("msg", "add navi success");
+            statusInfo.put("naviName", naviName);
+            statusInfo.put("naviId", naviId);
+            statusInfo.put("textureUrl", "/project/getEditSources/" + userId + "/" + projectId + "/" + picId + suffix);
+            JSONObject configData = JSON.parseObject(configurationFile);
+            JSONObject sceneData = configData.getJSONObject("scene");
+            JSONArray naviData = sceneData.getJSONArray("navi");
+            JSONArray texturesData = configData.getJSONArray("textures");
+
+            int offset = naviData.size();
+
+            JSONObject newNavi = naviData.addObject();
+            JSONObject newTexture = texturesData.addObject();
+
+
+            newTexture.put("id", picId);
+            newTexture.put("name", naviName);
+            newTexture.put("type", "navi");
+            newTexture.put("url", "/project/getEditSources/" + userId + "/" + projectId + "/" + picId + suffix);
+
+            newNavi.put("name", naviName);
+            newNavi.put("id", naviId);
+            newNavi.put("texture", picId);
+
+            JSONObject positionData = newNavi.putObject("position");
+            positionData.put("x", 0);
+            positionData.put("y", 0);
+            positionData.put("z", offset);
+
+            JSONObject geometryScaleData = newNavi.putObject("geometryScale");
+            geometryScaleData.put("x", -1);
+            geometryScaleData.put("y", 1);
+            geometryScaleData.put("z", 1);
+
+            JSONObject scaleData = newNavi.putObject("scale");
+            scaleData.put("x", 1);
+            scaleData.put("y", 1);
+            scaleData.put("z", 1);
+
+            JSONObject rotationData = newNavi.putObject("rotation");
+            rotationData.put("x", 1.5707963267948966);
+            rotationData.put("y", 0);
+            rotationData.put("z", 0);
+            storageService.delete(path);
+            try {
+                storageService.store(file, prefix, picId);
+                storageService.store(configData.toJSONString(), prefix);
+            } catch (Exception ex) {
+
+                System.out.println(ex.getMessage());
+
+            }
+
+        }
+        return JSON.toJSONString(statusInfo);
+
+    }
+
     /**
      * 前端创建项目页面上传空间模型调用的接口,将模型文件按id存储为文件.
      *
@@ -167,7 +246,7 @@ public class UploadResourcesController {
     String uploadModel(@RequestParam("file") MultipartFile file, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId, @PathVariable("modelId") String modelId) {
 
         String fileName = file.getOriginalFilename();
-        log.info("Resources\t[Upload]  SpaceModel:" + fileName);
+        log.info("Resources\t[Upload]\tSpaceModel:" + fileName);
         JSONObject statusInfo = new JSONObject();
         statusInfo.put("code", 0);
         statusInfo.put("msg", "upload success");
@@ -190,8 +269,8 @@ public class UploadResourcesController {
     String uploadConfigFile(@RequestBody String configFile, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId) {
 
         String prefix = userId + "/" + projectId + "/";
-        log.info("Request   [Post]/uploadConfigFile userId:" + userId + " projectId:" + projectId);
-        log.info("Resources [Upload]  [Project Configuration File Create] ID:" + projectId);
+        log.info("Request\t[Post]/uploadConfigFile\tuserId:" + userId + " projectId:" + projectId);
+        log.info("Resources\t[Upload]\t[Project Configuration File Create]\tID:" + projectId);
         JSONObject projectConfig = JSON.parseObject(configFile);
         JSONObject metaInfo = projectConfig.getJSONObject("metadata");
 
@@ -236,7 +315,7 @@ public class UploadResourcesController {
      */
     @PostMapping("/updateConfigFile/{userId}/{projectId}")
     String updateConfigFile(@RequestBody String configFile, @PathVariable("userId") String userId, @PathVariable("projectId") String projectId) {
-        log.info("Resources\t[Upload]\t[Project Configuration File Update] ProjectId:" + projectId);
+        log.info("Resources\t[Upload]\t[Project Configuration File Update]\tProjectId:" + projectId);
         String prefix = userId + "/" + projectId + "/";
         String path = prefix + "projectConfig.json";
         storageService.delete(path);

@@ -1,5 +1,11 @@
-import * as THREE from '../build/three.module.js';
+/*
+*
+* This file contains methods for generating cubemap texture from Equirectangular Picture.
+* Thu,Mar21,2023.
+*
+*/
 
+import * as THREE from '../build/three.module.js';
 
 // const canvasProps = {width: 1280, height: 720, vww: 0.64, vhw: 0.36};
 const canvasProps = {}

@@ -10,7 +10,18 @@ import {DDSLoader} from "../lib/loaders/DDSLoader.js";
 import {MTLLoader} from "../lib/loaders/MTLLoader.js";
 import {OBJLoader} from "../lib/loaders/OBJLoader.js";
 
-// Entry Method of reconstruct scene.
+
+/**
+ * Entry Method of reconstruct scene.
+ * 游览、编辑页面读入项目配置文件恢复three.js场景的入口方法.
+ * 重建后的场景天空盒会被加入 'name' 属性为 'panoGroup' 的THREE.Group,
+ * 导航热点加入 'name' 属性为 'naviGroup' 的THREE.Group,
+ * 空间模型加入 'name' 属性为 'mtlModel' 的THREE.Group,
+ * 'entityGroup' 是上述三个分组的父结点,'entityGroup' 会与 'transformControl' 控制器绑定使 'transformControl' 可以对重建后场景中的所有实体对象生效.
+ * @param scene         THREE.Scene 容纳配置文件中实体重建后的场景对象
+ * @param entityGroup   THREE.Group
+ * @param jsonUrl       项目配置文件的资源路径
+ */
 export function sceneConstructor(scene, entityGroup, jsonUrl) {
 
     let sceneConfig;
@@ -39,7 +50,13 @@ export function sceneConstructor(scene, entityGroup, jsonUrl) {
 //
 // }
 
-// parsing configuration file and recover scene.
+
+/**
+ * parsing configuration file and recover scene.
+ * @param scene
+ * @param entityGroup
+ * @param sceneConfig
+ */
 function parseSceneConfig(scene, entityGroup, sceneConfig) {
 
     const texturesConfigArr = sceneConfig["textures"];
@@ -57,6 +74,11 @@ function parseSceneConfig(scene, entityGroup, sceneConfig) {
 
 }
 
+/**
+ * 加载配置文件中的所有贴图项,并生成以 'id' 为key, 'THREE.Texture' 为value的Map.
+ * @param texturesConfigArr
+ * @returns {Map<string, THREE.Texture>}
+ */
 function generateTexturesMap(texturesConfigArr) {
 
     let texturesMap = new Map;
@@ -157,10 +179,13 @@ function constructNaviCircle(parentObject, naviConfigArr, texturesMap) {
         mesh_circle.position.copy(naviPosition);
 
         mesh_circle.name = naviConfig["name"];
+        mesh_circle.customId = naviConfig["id"];
         mesh_circle.renderOrder = 11;
 
-        parentObject.add(mesh_circle);
+        naviGroup.add(mesh_circle);
     }
+
+    parentObject.add(naviGroup);
 
 }
 
@@ -283,7 +308,7 @@ export function getTexturesFromAtlasFile(atlasImgUrl, tilesNum) {
 
 }
 
-// 设置初始视角,如果项目配置文件metadata.initView未定义则设置初始视角设置为第一个天空盒的位置.
+// 设置初始视角,如果项目配置文件 'metadata.initView' 未定义则设置初始视角设置为第一个天空盒的位置.
 function setInitView(scene, sceneConfig) {
 
     const skyboxConfigArr = sceneConfig["scene"]["skybox"];

@@ -42,6 +42,7 @@ let enableSelect = false;
 let scaleSlider = null;
 
 let showAddSkyboxModal;
+let showAddNaviModal;
 
 const genIdLength = 17;
 
@@ -379,9 +380,9 @@ function selectNextObject() {
 }
 
 /**
- *
- * @param scene
- * @param sceneInfo {sceneName,skyboxId,textureUrl}
+ *根据服务器对添加天空盒请求返回的响应信息在场景中添加新的场景天空盒.
+ * @param scene                                     THREE.Scene
+ * @param sceneInfo {sceneName,skyboxId,textureUrl} 服务器对添加天空盒请求的响应信息.
  */
 function addSceneSkybox(scene, sceneInfo) {
 
@@ -416,6 +417,11 @@ function addSceneSkybox(scene, sceneInfo) {
 
 }
 
+/**
+ * 添加场景功能的UI组件,实现添加场景功能,由表单弹出框与上传组件构成.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const AddSkyboxContent = () => {
 
     const [form] = antd.Form.useForm();
@@ -447,6 +453,9 @@ const AddSkyboxContent = () => {
         setIsSceneInfoModalOpen(false);
     };
 
+    // <Antd.Upload>组件上传文件前的钩子方法,用于对原始文件进行验证或处理
+    // (file, fileList) => boolean | Promise<File> | Upload.LIST_IGNORE
+    // 将用户选择的 'Equirectangular' 投影全景图生成 'cubeMap' 贴图后上传.
     const handleBeforeUpload = (file) => {
 
         const picId = nanoid(genIdLength);
@@ -459,12 +468,11 @@ const AddSkyboxContent = () => {
 
         })
 
-
     }
 
+    // 上传完成后的回调函数,调用在THREE.js场景中新建天空盒的方法.
     const handleAfterUpload = (result) => {
 
-        console.log(result);
         if (result.file.status === "done") {
             addSceneSkybox(scene, result.file.response)
         }
@@ -527,6 +535,161 @@ const AddSkyboxContent = () => {
     );
 
 }
+
+/**
+ * 根据服务器对添加热点请求返回的响应信息在场景中添加新的场景热点.
+ * @param scene
+ * @param naviInfo
+ */
+function addSceneNavi(scene, naviInfo) {
+
+    for (const obj3d of scene.children) {
+        if (obj3d.name === "sceneEntity") {
+            for (const entityGroup of obj3d.children) {
+                if (entityGroup.name === "naviGroup") {
+
+                    const geometry_circle = new THREE.CircleBufferGeometry(0.3, 20, 0, 2 * Math.PI);
+                    geometry_circle.scale(-1, 1, 1);
+                    const texture_circle = new THREE.TextureLoader().load(naviInfo.textureUrl);
+                    const mesh_circle = new THREE.Mesh(geometry_circle, new THREE.MeshBasicMaterial({
+                        map: texture_circle,
+                        transparent: true,
+                        depthTest: false
+                    }));
+
+                    mesh_circle.rotation.x = 1.5707963267948966;
+                    mesh_circle.rotation.y = 0;
+                    mesh_circle.rotation.z = 0;
+
+                    const naviPosition = new THREE.Vector3(0, 0, entityGroup.children.length);
+                    mesh_circle.position.copy(naviPosition);
+
+                    mesh_circle.name = naviInfo.naviName;
+                    mesh_circle.customId = naviInfo.naviId;
+                    mesh_circle.renderOrder = 11;
+                    entityGroup.add(mesh_circle);
+                }
+            }
+
+        }
+    }
+
+}
+
+/**
+ * 添加热点功能的UI组件,实现添加热点功能,由表单弹出框与上传组件构成.
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const AddNaviContent = () => {
+
+    const [form] = antd.Form.useForm();
+    const [isNaviInfoModalOpen, setIsNaviInfoModalOpen] = React.useState(false);
+    const [naviInfoData, setNaviInfoData] = React.useState(null);
+    const [actionUrl, setActionUrl] = React.useState("");
+    const uploadButtonRef = React.useRef(null);
+
+    showAddNaviModal = () => {
+        setIsNaviInfoModalOpen(true);
+    };
+
+    const handleNaviInfoModalOk = () => {
+
+        form.validateFields().then((values) => {
+            form.resetFields();
+            setNaviInfoData({naviName: values.naviName})
+            setIsNaviInfoModalOpen(false);
+            uploadButtonRef.current.click();
+
+        }).catch((info) => {
+            console.log('validate Failed:', info);
+        })
+
+    };
+
+    const handleNaviInfoModalCancel = () => {
+
+        setIsNaviInfoModalOpen(false);
+    };
+
+    // <Antd.Upload>组件上传文件前的钩子方法,用于对原始文件进行验证或处理
+    // (file, fileList) => boolean | Promise<File> | Upload.LIST_IGNORE
+    const handleBeforeUpload = (file) => {
+
+        const picId = nanoid(genIdLength);
+        const naviId = nanoid(genIdLength);
+        setActionUrl("/addNavi/" + userId + "/" + configurationFileId + "/" + picId + "/" + naviId);
+
+        return true;
+
+    }
+
+    // 上传完成后的回调函数,调用在THREE.js场景中新建天空盒的方法.
+    const handleAfterUpload = (result) => {
+
+        if (result.file.status === "done") {
+            addSceneNavi(scene, result.file.response)
+        }
+
+    }
+
+    return (
+        <div>
+            <antd.Upload id={"addNaviUpload"}
+                         accept={"image/png, image/jpeg"}
+                         action={actionUrl}
+                         style={{display: 'none'}}
+                         showUploadList={false}
+                         data={naviInfoData}
+                         beforeUpload={handleBeforeUpload}
+                         onChange={handleAfterUpload}>
+                <antd.Button style={{display: "none"}} ref={uploadButtonRef}></antd.Button>
+            </antd.Upload>
+            <antd.Modal title="热点信息" open={isNaviInfoModalOpen} onOk={handleNaviInfoModalOk}
+                        onCancel={handleNaviInfoModalCancel}>
+                <antd.Form
+                    form={form}
+                    name="naviInfo"
+                    layout="vertical"
+                    initialValues={{
+                        remember: true,
+                    }}
+                    onFinish={() => {
+                    }}
+                    onFinishFailed={() => {
+                    }}
+                    autoComplete="off"
+                >
+                    <antd.Form.Item
+                        label="热点名称"
+                        name="naviName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your sceneName!',
+                            },
+                        ]}
+                    >
+                        <antd.Input/>
+                    </antd.Form.Item>
+                    <antd.Form.Item
+                        label="热点描述"
+                        name="naviDescription"
+                        rules={[
+                            {
+                                required: false,
+                            },
+                        ]}
+                    >
+                        <antd.Input/>
+                    </antd.Form.Item>
+                </antd.Form>
+            </antd.Modal>
+        </div>
+    );
+
+}
+
 
 layui.use('slider', function () {
     var slider = layui.slider;
@@ -615,6 +778,7 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
 
         } else if (options.id === 3) {
             // 添加热点
+            showAddNaviModal();
 
         } else if (options.id === 4) {
             // 开启选择模式
@@ -724,7 +888,10 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
 const app = document.getElementById("app");
 const root = ReactDOM.createRoot(app);
 root.render(
-    <AddSkyboxContent></AddSkyboxContent>
+    <div>
+        <AddSkyboxContent></AddSkyboxContent>
+        <AddNaviContent></AddNaviContent>
+    </div>
 );
 
 
