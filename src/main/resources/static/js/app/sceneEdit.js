@@ -51,6 +51,10 @@ animate();
 
 function init() {
 
+    if (window !== window.parent) {
+        console.log("iframe");
+    }
+
     scene = new THREE.Scene();
     scene2 = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -67,6 +71,7 @@ function init() {
 
     entityGroup = new THREE.Group();
     entityGroup.name = "sceneEntity";
+    entityGroup.isTourMode = false;
 
     sceneConstructor(scene, entityGroup, projectConfigurationUrl);
     console.log(scene, "scene");
@@ -561,12 +566,16 @@ function addSceneNavi(scene, naviInfo) {
                     mesh_circle.rotation.y = 0;
                     mesh_circle.rotation.z = 0;
 
-                    const naviPosition = new THREE.Vector3(0, 0, entityGroup.children.length);
+                    //const naviPosition = new THREE.Vector3(0, 0, entityGroup.children.length);
+                    const naviPosition = new THREE.Vector3();
+                    naviPosition.copy(currentSelected.position);
+                    naviPosition.y = naviPosition.y - currentSelected.scale.y / 2;
                     mesh_circle.position.copy(naviPosition);
 
                     mesh_circle.name = naviInfo.naviName;
                     mesh_circle.customId = naviInfo.naviId;
                     mesh_circle.renderOrder = 11;
+                    mesh_circle.map = naviInfo.map;
                     entityGroup.add(mesh_circle);
                 }
             }
@@ -618,7 +627,7 @@ const AddNaviContent = () => {
 
         const picId = nanoid(genIdLength);
         const naviId = nanoid(genIdLength);
-        setActionUrl("/addNavi/" + userId + "/" + configurationFileId + "/" + picId + "/" + naviId);
+        setActionUrl("/addNavi/" + userId + "/" + configurationFileId + "/" + picId + "/" + naviId + "/" + currentSelected.customId);
 
         return true;
 
@@ -671,6 +680,18 @@ const AddNaviContent = () => {
                         ]}
                     >
                         <antd.Input/>
+                    </antd.Form.Item>
+                    <antd.Form.Item name="naviMapScene" label="热点绑定的场景" rules={[{required: true}]}>
+                        <antd.Select
+                            placeholder="选择一个热点绑定的场景"
+                            onChange={() => {
+                            }}
+                            allowClear
+                        >
+                            <antd.Select.Option value="scene1">scene1</antd.Select.Option>
+                            <antd.Select.Option value="scene2">scene2</antd.Select.Option>
+                            <antd.Select.Option value="scene3">scene3</antd.Select.Option>
+                        </antd.Select>
                     </antd.Form.Item>
                     <antd.Form.Item
                         label="热点描述"
@@ -778,7 +799,11 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
 
         } else if (options.id === 3) {
             // 添加热点
-            showAddNaviModal();
+            if (currentSelected !== null && currentSelected.parent.name === 'panoGroup') {
+                showAddNaviModal();
+            } else {
+                antd.message.error("请选中一个场景以添加导航热点");
+            }
 
         } else if (options.id === 4) {
             // 开启选择模式
@@ -827,6 +852,7 @@ layui.use(['dropdown', 'jquery', 'layer'], () => {
             //
             // });
             updateSceneConfig(scene, projectConfigurationUrl);
+            antd.message.success("项目保存成功！")
         } else if (options.id === 10) {
             // 清除场景
             scene.clear();

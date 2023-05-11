@@ -60,7 +60,8 @@
             barDetail: function (projectId) {
                 layer.msg('预览: ' + projectId);
                 var location = '/project/tour?projectId=' + projectId;
-                window.location = location;
+                //window.location = location;
+                window.open(location);
             },
             barRename: function (projectId) {
                 layer.prompt({title: '项目名称', formType: 2}, function (projectName, index) {
@@ -91,7 +92,8 @@
             },
             barEdit: function (projectId) {
                 var location = '/project/edit?projectId=' + projectId;
-                window.location = location;
+                //window.location = location;
+                window.open(location)
             },
             barShare: function (projectId) {
                 layer.msg('分享链接已经复制到粘贴板' + projectId);

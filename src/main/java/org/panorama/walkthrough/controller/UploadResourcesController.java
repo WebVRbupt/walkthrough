@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -77,7 +78,7 @@ public class UploadResourcesController {
      * @param projectId 项目的存储id\configurationId
      * @param picId     添加的贴图id
      * @param skyboxId  添加的天空盒id
-     * @return statusInfo
+     * @return statusInfo   {code|返回给前端的状态码,msg|返回给前端的信息,sceneName,skyboxId,tetureUrl}
      */
     @PostMapping("/addSkybox/{userId}/{projectId}/{picId}/{skyboxId}")
     String addSkybox(@RequestParam("file") MultipartFile file, @RequestParam("sceneName") String sceneName,
@@ -156,10 +157,22 @@ public class UploadResourcesController {
         return JSON.toJSONString(statusInfo);
     }
 
-    @PostMapping("/addNavi/{userId}/{projectId}/{picId}/{skyboxId}")
+    /**
+     * 前端可视化编辑页面 ‘添加热点’ 功能调用的接口,存储热点贴图文件并更新服务器上的项目配置文件.
+     *
+     * @param file      热点贴图文件
+     * @param naviName  热点名称
+     * @param userId    项目所属用户id
+     * @param projectId 项目的配置文件id
+     * @param picId     热点贴图id
+     * @param naviId    热点id
+     * @param skyboxId  热点绑定的场景天空盒id
+     * @return statusInfo   {code|返回给前端的状态码,msg|返回给前端的信息,naviName,naviId,textureUrl,map}
+     */
+    @PostMapping("/addNavi/{userId}/{projectId}/{picId}/{naviId}/{skyboxId}")
     String addNavi(@RequestParam("file") MultipartFile file, @RequestParam("naviName") String naviName,
                    @PathVariable("userId") String userId, @PathVariable("projectId") String projectId,
-                   @PathVariable("picId") String picId, @PathVariable("skyboxId") String naviId) {
+                   @PathVariable("picId") String picId, @PathVariable("naviId") String naviId, @PathVariable("skyboxId") String skyboxId) {
 
         log.info("Request\t[Post]/addNavi\tpath:/" + userId + "/" + projectId + "/" + picId + "/" + naviId);
         JSONObject statusInfo = new JSONObject();
@@ -179,12 +192,17 @@ public class UploadResourcesController {
             statusInfo.put("naviName", naviName);
             statusInfo.put("naviId", naviId);
             statusInfo.put("textureUrl", "/project/getEditSources/" + userId + "/" + projectId + "/" + picId + suffix);
+            statusInfo.put("map", skyboxId);
             JSONObject configData = JSON.parseObject(configurationFile);
             JSONObject sceneData = configData.getJSONObject("scene");
+            JSONArray skyboxData = sceneData.getJSONArray("skybox");
             JSONArray naviData = sceneData.getJSONArray("navi");
             JSONArray texturesData = configData.getJSONArray("textures");
+            Map<String, JSONObject> skyboxMap = new HashMap<>();
+            for (int i = 0; i < skyboxData.size(); ++i) {
+                skyboxMap.put(skyboxData.getJSONObject(i).getString("id"), skyboxData.getJSONObject(i));
+            }
 
-            int offset = naviData.size();
 
             JSONObject newNavi = naviData.addObject();
             JSONObject newTexture = texturesData.addObject();
@@ -198,11 +216,13 @@ public class UploadResourcesController {
             newNavi.put("name", naviName);
             newNavi.put("id", naviId);
             newNavi.put("texture", picId);
+            newNavi.put("map", skyboxId);
 
             JSONObject positionData = newNavi.putObject("position");
-            positionData.put("x", 0);
-            positionData.put("y", 0);
-            positionData.put("z", offset);
+            JSONObject naviMapSkybox = skyboxMap.get(skyboxId);
+            positionData.put("x", naviMapSkybox.getJSONObject("position").getIntValue("x"));
+            positionData.put("y", naviMapSkybox.getJSONObject("position").getIntValue("y") - naviMapSkybox.getJSONObject("scale").getIntValue("y") / 2);
+            positionData.put("z", naviMapSkybox.getJSONObject("position").getIntValue("z"));
 
             JSONObject geometryScaleData = newNavi.putObject("geometryScale");
             geometryScaleData.put("x", -1);

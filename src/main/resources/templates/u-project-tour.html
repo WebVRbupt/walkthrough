@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <title>全景行走漫游</title>
     <script src="/js/app/sceneTour.js" type="module"></script>
+    <script th:inline="javascript">
+        sessionStorage.setItem('configurationFileId',[[${session.configurationFileId}]]);
+        sessionStorage.setItem('userId',[[${session.user.getUserId()}]]);
+    </script>
+    <script src="/js/lib/Tween.js"></script>
 </head>
 <body>
 <div class="sceneContainer" id="sceneContainer"></div>
-<script th:inline="javascript">
-    sessionStorage.setItem('configurationFileId',[[${session.configurationFileId}]])
-</script>
+
 </body>
 </html>

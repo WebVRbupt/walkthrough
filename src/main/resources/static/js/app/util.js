@@ -65,3 +65,73 @@ export function attachObjectsForControls(objectArr, transformControl) {
 export function rad2deg(rad) {
     return rad * 180 / Math.PI;
 }
+
+/**
+ * 获取three.js场景 'scene' 下场景天空盒对象数组.
+ * @param scene
+ * @returns {Array:Object3D}
+ */
+export function getSkyboxArr(scene) {
+
+    return getObjectArr(scene, "panoGroup");
+
+}
+
+/**
+ * 获取three.js场景 'scene' 下导航热点对象数组.
+ * @param scene
+ * @returns {Array:Object3D}
+ */
+export function getNaviCircleArr(scene) {
+
+    return getObjectArr(scene, "naviGroup");
+
+}
+
+/**
+ * 获取three.js场景 'scene' 下空间模型对象数组.
+ * @param scene
+ * @returns {Array:Object3D}
+ */
+export function getModelArr(scene) {
+
+    return getObjectArr(scene, "mtlModel");
+
+}
+
+/**
+ * 根据three.js场景 'scene' 中 'Object3D' 对象所属父Group元素的name属性返回 'Object3D' 对象数组.
+ * @param scene
+ * @param groupName "panoGroup" | "naviGroup" | "mtlModel"
+ * @returns {Array:Object3D}
+ */
+function getObjectArr(scene, groupName) {
+
+    for (let obj3d of scene.children) {
+        if (obj3d.name === "sceneEntity") {
+            for (let childGroup of obj3d.children) {
+                if (childGroup.name === groupName)
+                    return childGroup.children;
+            }
+        }
+    }
+}
+
+/**
+ * 传入一个 three.js 'Object3D' 对象数组,返回以 'customId' 为 key,该 'Object3D'对象为 value 的 Map.
+ * @param objectArr
+ * @returns {Map<string, Object3D>}
+ */
+export function genObjectMap(objectArr) {
+
+    let objectMap = new Map;
+    console.log(objectArr);
+    if (objectArr !== null && objectArr !== undefined) {
+        for (const obj of objectArr) {
+            objectMap.set(obj.customId, obj);
+        }
+    }
+
+    return objectMap;
+
+}

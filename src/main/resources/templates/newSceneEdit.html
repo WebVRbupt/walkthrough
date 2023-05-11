@@ -247,7 +247,8 @@
 </div>
 
 <script th:inline="javascript">
-    sessionStorage.setItem('configurationFileId',[[${session.configurationFileId}]])
+    sessionStorage.setItem('configurationFileId',[[${session.configurationFileId}]]);
+    sessionStorage.setItem('userId',[[${session.user.getUserId()}]]);
 </script>
 
 </body>

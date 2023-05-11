@@ -18,7 +18,7 @@ const saveProps = {
     processing: true,
     progress: 0,
     saveDisable: false,
-    resolution: 512,
+    resolution: 1024,
     format: 'png'
 };
 

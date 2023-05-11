@@ -12,7 +12,7 @@ import {OBJLoader} from "../lib/loaders/OBJLoader.js";
 
 
 /**
- * Entry Method of reconstruct scene.
+ * Entry Method of Reconstruct Scene.
  * 游览、编辑页面读入项目配置文件恢复three.js场景的入口方法.
  * 重建后的场景天空盒会被加入 'name' 属性为 'panoGroup' 的THREE.Group,
  * 导航热点加入 'name' 属性为 'naviGroup' 的THREE.Group,
@@ -95,8 +95,15 @@ function generateTexturesMap(texturesConfigArr) {
 
 }
 
+/**
+ * @brief 加载配置文件中场景天空盒对象.
+ * @param parentObject
+ * @param skyboxConfigArr
+ * @param texturesMap
+ */
 function constructSkybox(parentObject, skyboxConfigArr, texturesMap) {
 
+    let initflag = false;
     console.log(skyboxConfigArr);
     const panoGroup = new THREE.Group();
     panoGroup.name = "panoGroup";
@@ -147,7 +154,12 @@ function constructSkybox(parentObject, skyboxConfigArr, texturesMap) {
         skyBox.position.copy(new THREE.Vector3(skyboxConfig["position"].x, skyboxConfig["position"].y, skyboxConfig["position"].z));
         skyBox.name = skyboxConfig["name"];
         skyBox.customId = skyboxConfig["id"];
-
+        if (parentObject.isTourMode) {
+            if (initflag) {
+                skyBox.visible = false;
+            }
+            initflag = true;
+        }
         panoGroup.add(skyBox);
 
     }
@@ -180,6 +192,7 @@ function constructNaviCircle(parentObject, naviConfigArr, texturesMap) {
 
         mesh_circle.name = naviConfig["name"];
         mesh_circle.customId = naviConfig["id"];
+        mesh_circle.map = naviConfig["map"];
         mesh_circle.renderOrder = 11;
 
         naviGroup.add(mesh_circle);
@@ -252,6 +265,7 @@ function loadModel(parentObject, manager, modelConfig) {
                     console.log(object.position);
                     obj.children[0].name = modelConfig["name"];
                     obj.children[0].customId = modelConfig["id"];
+                    object.visible = !parentObject.isTourMode;
                     parentObject.add(object);
                 }, onProgress, onError);
 
@@ -311,13 +325,19 @@ export function getTexturesFromAtlasFile(atlasImgUrl, tilesNum) {
 // 设置初始视角,如果项目配置文件 'metadata.initView' 未定义则设置初始视角设置为第一个天空盒的位置.
 function setInitView(scene, sceneConfig) {
 
+    console.log("setInitView");
+    console.log(sceneConfig["metadata"].initView, "initView");
+
     const skyboxConfigArr = sceneConfig["scene"]["skybox"];
-    let cameraPos = (sceneConfig["metadata"].initView !== null && sceneConfig["metadata"].initView !== undefined) ? sceneConfig["metadata"].initView : skyboxConfigArr[0].position;
+    let cameraPos = (sceneConfig["metadata"].initView === null || sceneConfig["metadata"].initView === undefined) ? skyboxConfigArr[0].position : sceneConfig["metadata"].initView;
     // let cameraPos = skyboxConfigArr[0].position;
+
+    console.log(cameraPos, "cameraPos");
 
     for (const obj3d of scene.children) {
         if (obj3d.isPerspectiveCamera) {
-            obj3d.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
+            // obj3d.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
+            obj3d.position.copy(cameraPos);
             return;
         }
     }
