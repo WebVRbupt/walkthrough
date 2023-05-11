@@ -9,8 +9,42 @@
         sessionStorage.setItem('userId',[[${session.user.getUserId()}]]);
     </script>
     <script src="/js/lib/Tween.js"></script>
+
 </head>
 <body>
+<script id="vertexShader" type="x-shader/x-vertex">
+        // attribute vec3 position;
+        // attribute vec3 color;
+        // 系统自动声明顶点纹理坐标变量uv
+        // attribute vec2 uv;
+        // varying关键字声明一个变量表示顶点纹理坐标插值后的结果
+        varying vec2 vUv;
+        void main(){
+            // 顶点纹理坐标uv数据进行插值计算
+            vUv = uv;
+            // 投影矩阵projectionMatrix、视图矩阵viewMatrix、模型矩阵modelMatrix
+            gl_Position = projectionMatrix*viewMatrix*modelMatrix*vec4( position, 1.0 );
+        }
+ 	   </script>
+<!-- 片元着色器 -->
+<script id="fragmentShader" type="x-shader/x-fragment">
+        // 声明一个纹理对象变量
+        uniform sampler2D texture1;
+        uniform sampler2D texture2;
+        uniform float Uprogress;
+		uniform float alpha;
+        // 顶点片元化后有多少个片元就有多少个纹理坐标数据 vUv
+        varying vec2 vUv;
+
+        void main() {
+            //内置函数texture2D通过纹理坐标vUv获得贴图texture的像素值
+            //gl_FragColor = mix(texture2D( texture1, vUv ),texture2D( texture2, vUv ),Uprogress);
+			vec4 colorFromBox0 = texture2D(texture1,vUv);
+			vec4 colorFromBox1 = texture2D(texture2,vUv);
+			vec3 color = mix(colorFromBox0.xyz,colorFromBox1.xyz,Uprogress);
+			gl_FragColor = vec4(color,alpha);
+		 }
+    	</script>
 <div class="sceneContainer" id="sceneContainer"></div>
 
 </body>

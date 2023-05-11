@@ -111,36 +111,32 @@ function constructSkybox(parentObject, skyboxConfigArr, texturesMap) {
 
         const materials = [];
         const textures_1 = texturesMap.get(skyboxConfig['texture'][0]);
-        // const textures_2 = texturesMap.get(skyboxConfig['texture'][1]);
-        // for (let i = 0; i < 6; i++) {
-        //     materials.push(new THREE.ShaderMaterial({
-        //         uniforms: {
-        //             texture1: {
-        //                 value: textures_1[i]
-        //             },
-        //             //用于渐变的纹理
-        //             texture2: {
-        //                 value: textures_2[i]
-        //             },
-        //             Uprogress: {
-        //                 value: 0
-        //             },
-        //             alpha: {
-        //                 value: 1
-        //             }
-        //         },
-        //         // 顶点着色器
-        //         vertexShader: document.getElementById('vertexShader').textContent,
-        //         // 片元着色器
-        //         fragmentShader: document.getElementById('fragmentShader').textContent,
-        //         transparent: true,
-        //         depthTest: false
-        //     }))
-        // }
-
-        for (let i = 0; i < 6; ++i) {
-            materials.push(new THREE.MeshBasicMaterial({map: textures_1[i]}));
+        //const textures_2 = texturesMap.get(skyboxConfig['texture'][1]);
+        for (let i = 0; i < 6; i++) {
+            materials.push(new THREE.ShaderMaterial({
+                uniforms: {
+                    texture1: {
+                        value: textures_1[i]
+                    },
+                    Uprogress: {
+                        value: 0
+                    },
+                    alpha: {
+                        value: 1
+                    }
+                },
+                // 顶点着色器
+                vertexShader: document.getElementById('vertexShader').textContent,
+                // 片元着色器
+                fragmentShader: document.getElementById('fragmentShader').textContent,
+                transparent: true,
+                depthTest: false
+            }))
         }
+
+        // for (let i = 0; i < 6; ++i) {
+        //     materials.push(new THREE.MeshBasicMaterial({map: textures_1[i]}));
+        // }
 
         const skyBox = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), materials);
 
