@@ -150,6 +150,9 @@ function constructSkybox(parentObject, skyboxConfigArr, texturesMap) {
         skyBox.position.copy(new THREE.Vector3(skyboxConfig["position"].x, skyboxConfig["position"].y, skyboxConfig["position"].z));
         skyBox.name = skyboxConfig["name"];
         skyBox.customId = skyboxConfig["id"];
+        console.log(textures_1[0],"texture_1[0]");
+
+        skyBox.tileWidth = textures_1[0].tileWidth;
         if (parentObject.isTourMode) {
             if (initflag) {
                 skyBox.visible = false;
@@ -232,6 +235,12 @@ function getSkyboxMapFromScene(scene) {
     return skyboxMap;
 }
 
+/**
+ * 加载空间模型方法
+ * @param parentObject
+ * @param manager
+ * @param modelConfig
+ */
 function loadModel(parentObject, manager, modelConfig) {
 
     let model, obj;
@@ -309,11 +318,13 @@ export function getTexturesFromAtlasFile(atlasImgUrl, tilesNum) {
                 context.drawImage(image, tileWidth * i, 0, tileWidth, tileWidth, 0, 0, tileWidth, tileWidth);
                 textures[i].image = canvas;
                 textures[i].needsUpdate = true;
+                textures[i].tileWidth = tileWidth;
 
             }
 
         });
 
+    console.log(textures, "textures");
     return textures;
 
 }
@@ -334,6 +345,7 @@ function setInitView(scene, sceneConfig) {
         if (obj3d.isPerspectiveCamera) {
             // obj3d.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
             obj3d.position.copy(cameraPos);
+            obj3d.position.x += 0.01;
             return;
         }
     }

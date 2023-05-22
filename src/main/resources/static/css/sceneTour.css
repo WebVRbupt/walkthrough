@@ -1,0 +1,14 @@
+body{
+    margin: 0;
+}
+
+#measureDistanceButton {
+    position: absolute;
+    z-index: 999;
+    bottom: 50px;
+    left: 20px;
+    opacity: 90%;
+    user-select: none;
+    /*background-color: lightgray;*/
+
+}

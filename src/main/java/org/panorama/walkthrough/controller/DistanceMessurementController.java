@@ -1,5 +1,8 @@
 package org.panorama.walkthrough.controller;
 
+import jep.Interpreter;
+import jep.JepConfig;
+import jep.SharedInterpreter;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,13 +17,13 @@ public class DistanceMessurementController {
     private static boolean init = false;
 
     private void initJep(){
-//        if(!init)
-//        {
-//            JepConfig config = new JepConfig();
-//            config.addIncludePaths("src/main/resources/static/python");
-//            SharedInterpreter.setConfig(config);
-//            init=true;
-//        }
+        if(!init)
+        {
+            JepConfig config = new JepConfig();
+            config.addIncludePaths("src/main/resources/static/python");
+            SharedInterpreter.setConfig(config);
+            init=true;
+        }
     }
 
     @PostMapping ("/dm")
@@ -58,16 +61,16 @@ public class DistanceMessurementController {
 
         initJep();
         Object result;
-//        try (Interpreter interp = new SharedInterpreter()) {
-//
-//            interp.eval("from depth2pointcloud import *");
-//            // test a basic invoke with no args
-//            result = interp.invoke("calcDistance",x1,y1,x2,y2);
-//            interp.exec("import sys");
-//            interp.exec("sys.stdout.flush()");
-//            System.out.println(result);
-//        }
+        try (Interpreter interp = new SharedInterpreter()) {
 
-        return null;
+            interp.eval("from depth2pointcloud import *");
+            // test a basic invoke with no args
+            result = interp.invoke("calcDistance",x1,y1,x2,y2);
+            interp.exec("import sys");
+            interp.exec("sys.stdout.flush()");
+            System.out.println(result);
+        }
+
+        return result.toString();
     }
 }

@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>全景行走漫游</title>
+    <link rel="stylesheet" type="text/css" href="/css/sceneTour.css">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/layui/layui.js"></script>
+    <script src="/js/lib/axios.min.js"></script>
     <script src="/js/app/sceneTour.js" type="module"></script>
+
+    <script src="/js/lib/Tween.js"></script>
     <script th:inline="javascript">
         sessionStorage.setItem('configurationFileId',[[${session.configurationFileId}]]);
         sessionStorage.setItem('userId',[[${session.user.getUserId()}]]);
     </script>
-    <script src="/js/lib/Tween.js"></script>
+
 
 </head>
 <body>
@@ -46,6 +52,7 @@
 		 }
     	</script>
 <div class="sceneContainer" id="sceneContainer"></div>
+<button type="button" class="layui-btn layui-btn-primary" id="measureDistanceButton">测距</button>
 
 </body>
 </html>
