@@ -43,6 +43,8 @@ let end = null;
 let geometryLine;
 let materialLine = null;
 const lineGroup = new THREE.Group();
+let scaling = 5;
+let dm_units = "cm";
 
 /**
  * Definition of Rotation Matrix for adjusting uv mapping.
@@ -131,6 +133,7 @@ function init() {
 
     scene.add(lineGroup);
     document.getElementById("measureDistanceButton").addEventListener('click', onMeasureDistance);
+    document.getElementById("scaleButton").addEventListener('click', onScaleCalibration);
 
 }
 
@@ -436,7 +439,8 @@ function onPointerSelect(event) {
 
         axios.post('/dm', data).then(res => {
             if (res.status === 200) {
-                let spritey = makeTextSprite((res.data).toString().substring(0,4),
+
+                let spritey = makeTextSprite((res.data * scaling).toString().substring(0, 5) + dm_units,
                     {
                         fontsize: 17,
                         borderColor: {r: 255, g: 255, b: 255, a: 0.5},
@@ -640,6 +644,7 @@ function onNaviClick(event) {
         currentPano = nextPano;
         nextPano = null;
         //	navi_circles.visible=true;
+        circles.visible = true;
     });
     let scale_begin = {x: 3.3, y: 4.9, z: 3.3};
     let scale_end = {x: 2.2, y: 2.2, z: 2.2};
@@ -658,6 +663,7 @@ function onNaviClick(event) {
     const tween = new TWEEN.Tween();
     tween.chain(tweenA, tweenB);
     tweenA.start();
+    circles.visible = false;
 
 }
 
@@ -698,5 +704,36 @@ function eul2rotm(title, roll, pan) {
     Rot.multiply(R_x);
     console.log(Rot.elements)
     return Rot;
+
+}
+
+function onScaleCalibration() {
+
+    layui.use(['jquery', 'layer', 'form'], () => {
+
+        const $ = layui.$;
+        const layer = layui.layer;
+
+        layer.open({
+            title: '全景行走漫游比例标定',
+            type: 1,
+            btn: ['确认', '取消'],
+            content: $('#scaleCalibrationInput'),
+            icon: 1,
+            yes: (index, layero) => {
+                let scaleNum = document.getElementById("scaleNum").value;
+                let scaleUnits = document.getElementById("scaleUnits").value;
+
+                if (scaleNum !== '') {
+                    scaling = parseInt(scaleNum);
+                }
+                if (scaleUnits !== '') {
+                    dm_units=scaleUnits;
+                }
+                layer.close(index);
+            }
+        })
+    })
+
 
 }

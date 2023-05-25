@@ -12,3 +12,15 @@ body{
     /*background-color: lightgray;*/
 
 }
+
+
+#scaleButton {
+    position: absolute;
+    z-index: 999;
+    bottom: 50px;
+    left: 90px;
+    opacity: 90%;
+    user-select: none;
+    /*background-color: lightgray;*/
+
+}

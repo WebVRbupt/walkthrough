@@ -53,6 +53,27 @@
     	</script>
 <div class="sceneContainer" id="sceneContainer"></div>
 <button type="button" class="layui-btn layui-btn-primary" id="measureDistanceButton">测距</button>
+<button type="button" class="layui-btn layui-btn-primary" id="scaleButton">比例</button>
+
+<div id="scaleCalibrationInput" style="display: none">
+
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">比例</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required lay-verify="required" id="scaleNum"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">单位(cm/m)</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required lay-verify="required" placeholder="请输入距离单位" id="scaleUnits"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
 
 </body>
 </html>
