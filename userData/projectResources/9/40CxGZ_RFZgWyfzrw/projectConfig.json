@@ -1,0 +1,107 @@
+{
+  "metadata": {
+    "id": "40CxGZ_RFZgWyfzrw",
+    "projectId": 51,
+    "userId": 9,
+    "type": "exhibition",
+    "name": "测试",
+    "description": "",
+    "createDate": "Tue Apr 11 2023 15:58:08 GMT+0800 (中国标准时间)",
+    "path": "/9/40CxGZ_RFZgWyfzrw/"
+  },
+  "scene": {
+    "skybox": [
+      {
+        "name": "123",
+        "id": "4sEZVJfA3y6qgS97Q",
+        "texture": [
+          "iZZIDzF4-q5Mowqqj"
+        ],
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      {
+        "name": "456",
+        "id": "e0kA1QwNFLriMPg-5",
+        "texture": [
+          "SzOj_BFNOBhU_u7vG"
+        ],
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    ],
+    "navi": [],
+    "model": [
+      {
+        "id": "WK5pP28rh6m-u7nKt",
+        "name": "SpaceModel",
+        "url": "/9/40CxGZ_RFZgWyfzrw/",
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        }
+      }
+    ]
+  },
+  "textures": [
+    {
+      "id": "iZZIDzF4-q5Mowqqj",
+      "name": "123",
+      "type": "skybox",
+      "url": "/9/40CxGZ_RFZgWyfzrw/iZZIDzF4-q5Mowqqj.jpg"
+    },
+    {
+      "id": "SzOj_BFNOBhU_u7vG",
+      "name": "456",
+      "type": "skybox",
+      "url": "/9/40CxGZ_RFZgWyfzrw/SzOj_BFNOBhU_u7vG.jpg"
+    }
+  ]
+}

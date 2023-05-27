@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "id": "zl-KPObFS7CQZbA6v",
+    "projectId": 56,
+    "userId": 9,
+    "type": "exhibition",
+    "name": "测试项目new",
+    "description": "",
+    "createDate": "Fri Apr 14 2023 17:39:37 GMT+0800 (中国标准时间)",
+    "lastUpdate": "Mon Apr 17 2023 16:24:19 GMT+0800 (中国标准时间)",
+    "path": "/project/getEditSources/9/zl-KPObFS7CQZbA6v/",
+    "initView": null
+  },
+  "scene": {
+    "skybox": [
+      {
+        "name": "测试场景1",
+        "id": "vIG_fLVPlRJF-TKUM",
+        "texture": [
+          "jX2NdRDpVDPPcXVaE"
+        ],
+        "position": {
+          "x": -0.3108462145857951,
+          "y": 2.2194939105628397,
+          "z": 0.26091655878472886
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 3.3,
+          "y": 3.3,
+          "z": 3.3
+        },
+        "rotation": {
+          "x": 1.5707963267948963,
+          "y": -1.2246467991473532e-16,
+          "z": 3.141592653589793
+        }
+      },
+      {
+        "name": "测试2",
+        "id": "8iJE-kp12UgiQNGOw",
+        "texture": [
+          "GuJJEynp4J6ICrXHz"
+        ],
+        "position": {
+          "x": -0.4138672995260606,
+          "y": 2.145390167162487,
+          "z": 3.865929860671426
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 3.3,
+          "y": 3.3,
+          "z": 3.3
+        },
+        "rotation": {
+          "x": 1.5707963267948963,
+          "y": -1.2246467991473532e-16,
+          "z": 3.141592653589793
+        }
+      }
+    ],
+    "navi": [],
+    "model": [
+      {
+        "id": "bLF-6EN-KjVBNznOE",
+        "name": "SpaceModel",
+        "url": "/project/getEditSources/9/zl-KPObFS7CQZbA6v/",
+        "rotation": {
+          "x": -3.140184917367551e-16,
+          "y": -1.5707963057214724,
+          "z": 0
+        },
+        "position": {
+          "x": -1.807473938068167,
+          "y": 2.262678590147587,
+          "z": 1.8022783854415696
+        },
+        "scale": {
+          "x": 1.5,
+          "y": 1.5,
+          "z": 1.5
+        }
+      }
+    ]
+  },
+  "textures": [
+    {
+      "id": "jX2NdRDpVDPPcXVaE",
+      "name": "测试场景1",
+      "type": "skybox",
+      "url": "/project/getEditSources/9/zl-KPObFS7CQZbA6v/jX2NdRDpVDPPcXVaE.jpg"
+    },
+    {
+      "id": "GuJJEynp4J6ICrXHz",
+      "name": "测试2",
+      "type": "skybox",
+      "url": "/project/getEditSources/9/zl-KPObFS7CQZbA6v/GuJJEynp4J6ICrXHz.jpg"
+    }
+  ]
+}

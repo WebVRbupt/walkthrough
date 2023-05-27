@@ -1,0 +1,142 @@
+{
+  "metadata": {
+    "id": "tONra4SGKx33FiPp-",
+    "projectId": 59,
+    "userId": 9,
+    "type": "room",
+    "name": "测试编辑",
+    "description": "xxxxxxxx",
+    "createDate": "Mon Apr 17 2023 17:48:57 GMT+0800 (中国标准时间)",
+    "lastUpdate": "Mon Apr 17 2023 18:14:40 GMT+0800 (中国标准时间)",
+    "path": "/project/getEditSources/9/tONra4SGKx33FiPp-/",
+    "initView": null
+  },
+  "scene": {
+    "skybox": [
+      {
+        "name": "scene1",
+        "id": "11YfMRcd1DV4UQIZo",
+        "texture": [
+          "w5_yy2U7swnuKuOpx"
+        ],
+        "position": {
+          "x": -1.2586423769735484,
+          "y": 1.0613825303564908,
+          "z": 1.8292649068014861
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 2.3,
+          "y": 2.3,
+          "z": 2.3
+        },
+        "rotation": {
+          "x": 1.5707963267948972,
+          "y": 2.7755575615628914e-16,
+          "z": 1.5707963267948966
+        }
+      },
+      {
+        "name": "scene2",
+        "id": "MrF9BoGOIYGDSwetO",
+        "texture": [
+          "qr6wUsYs-eR5wgZNz"
+        ],
+        "position": {
+          "x": 1.5509568407288337,
+          "y": 1.1485999924524517,
+          "z": 1.694886004419791
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 2.3,
+          "y": 2.3,
+          "z": 2.3
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": -2.220446049250313e-16,
+          "z": 1.5707963267948963
+        }
+      },
+      {
+        "name": "scene3",
+        "id": "vyHt7UBLumbptLDu5",
+        "texture": [
+          "Ft5POEe5A1SVnmTPH"
+        ],
+        "position": {
+          "x": -4.2038103743129955,
+          "y": 1.1127402667858104,
+          "z": 1.8355169473509756
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": -1
+        },
+        "scale": {
+          "x": 2.3,
+          "y": 2.3,
+          "z": 2.3
+        },
+        "rotation": {
+          "x": 1.5707963267948966,
+          "y": 2.220446049250313e-16,
+          "z": 1.5707963267948963
+        }
+      }
+    ],
+    "navi": [],
+    "model": [
+      {
+        "id": "3S-syUxHoSczq05wb",
+        "name": "SpaceModel",
+        "url": "/project/getEditSources/9/tONra4SGKx33FiPp-/",
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "position": {
+          "x": 0,
+          "y": 1.141928293561405,
+          "z": 2.381871126254622
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        }
+      }
+    ]
+  },
+  "textures": [
+    {
+      "id": "w5_yy2U7swnuKuOpx",
+      "name": "scene1",
+      "type": "skybox",
+      "url": "/project/getEditSources/9/tONra4SGKx33FiPp-/w5_yy2U7swnuKuOpx.jpg"
+    },
+    {
+      "id": "qr6wUsYs-eR5wgZNz",
+      "name": "scene2",
+      "type": "skybox",
+      "url": "/project/getEditSources/9/tONra4SGKx33FiPp-/qr6wUsYs-eR5wgZNz.jpg"
+    },
+    {
+      "id": "Ft5POEe5A1SVnmTPH",
+      "name": "scene3",
+      "type": "skybox",
+      "url": "/project/getEditSources/9/tONra4SGKx33FiPp-/Ft5POEe5A1SVnmTPH.jpg"
+    }
+  ]
+}

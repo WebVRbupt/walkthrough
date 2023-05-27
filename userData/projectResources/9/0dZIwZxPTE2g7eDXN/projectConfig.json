@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "id": "0dZIwZxPTE2g7eDXN",
+    "projectId": 13,
+    "userId": 9,
+    "type": "exhibition",
+    "name": "测试啊啊啊",
+    "description": "",
+    "createDate": "Fri Apr 07 2023 10:23:20 GMT+0800 (中国标准时间)",
+    "path": "/9/0dZIwZxPTE2g7eDXN/"
+  },
+  "scene": {
+    "skybox": [
+      {
+        "name": "额",
+        "id": "mqMGzjr812MhBHfx-",
+        "texture": [
+          "Xy_HU_b_rhJpN59YM"
+        ],
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "geometryScale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    ],
+    "navi": [],
+    "model": [
+      {
+        "id": "yPwB43WDzfcbTaOy8",
+        "name": "SpaceModel",
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        }
+      }
+    ]
+  },
+  "textures": [
+    {
+      "id": "Xy_HU_b_rhJpN59YM",
+      "name": "额",
+      "type": "skybox",
+      "url": "/9/0dZIwZxPTE2g7eDXN/Xy_HU_b_rhJpN59YM.jpg"
+    }
+  ]
+}
